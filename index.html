@@ -1,0 +1,4063 @@
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+>
+
+<title>AREC GEO · V14 Macros Ready</title>
+
+<link
+    rel="stylesheet"
+    href="https://unpkg.com/maplibre-gl@6.11.2/dist/maplibre-gl.css"
+/>
+
+<style>
+
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 350px;
+    right: 0;
+}
+
+#panel {
+    position: absolute;
+    width: 350px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    background: white;
+    border-right: 1px solid #ccc;
+
+    overflow-y: auto;
+    box-sizing: border-box;
+
+    padding: 15px;
+}
+
+h1 {
+    font-size: 19px;
+    margin: 0 0 5px 0;
+}
+
+h2 {
+    font-size: 13px;
+    margin-top: 22px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.base-layer {
+    margin: 8px 0;
+    font-size: 13px;
+}
+
+.variable {
+    border-bottom: 1px solid #eee;
+}
+
+.variable-header {
+    padding: 8px 3px;
+    cursor: pointer;
+    font-size: 13px;
+
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.variable-header:hover {
+    background: #f5f5f5;
+}
+
+.arrow {
+    width: 14px;
+    font-size: 11px;
+}
+
+.variable-code {
+    font-weight: bold;
+}
+
+.subcapas {
+    display: none;
+    margin-left: 22px;
+    padding-bottom: 7px;
+}
+
+.subcapa {
+    font-size: 12px;
+    margin: 6px 0;
+
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.subcapa input {
+    margin-top: 1px;
+}
+
+.status {
+    font-size: 10px;
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+.status-publica {
+    color: #777;
+}
+
+.status-interna {
+    color: #a00000;
+}
+
+.status-manual {
+    color: #996000;
+}
+
+.status-activa {
+    color: #08752f;
+    font-weight: bold;
+}
+
+.resumen {
+    margin-top: 20px;
+
+    padding: 10px;
+
+    background: #f4f4f4;
+
+    font-size: 11px;
+
+    border-radius: 4px;
+}
+
+.map-legend {
+    position: absolute;
+    right: 15px;
+    bottom: 30px;
+
+    z-index: 20;
+
+    background: rgba(255,255,255,0.96);
+
+    border: 1px solid #ccc;
+    border-radius: 6px;
+
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+
+    padding: 12px 14px;
+
+    font-size: 12px;
+
+    min-width: 220px;
+}
+
+.map-legend-title {
+    font-weight: bold;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+
+.legend-row {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin: 5px 0;
+}
+
+.legend-swatch {
+    width: 18px;
+    height: 18px;
+
+    border: 1px solid #777;
+
+    flex-shrink: 0;
+}
+
+.legend-note {
+    margin-top: 9px;
+
+    padding-top: 7px;
+
+    border-top: 1px solid #ddd;
+
+    color: #666;
+
+    font-size: 10px;
+
+    line-height: 1.35;
+}
+
+</style>
+
+
+<style id="arec-dashboard-format">
+
+:root{
+  --ag-top:62px;
+  --ag-left:340px;
+  --ag-right:350px;
+  --ag-line:#dce3ea;
+  --ag-blue:#0b6596;
+  --ag-text:#14202b;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  overflow:hidden;
+  background:#fff;
+  color:var(--ag-text);
+}
+
+/* TOPBAR */
+
+#ag-topbar{
+  position:fixed;
+  z-index:5000;
+  left:0;
+  right:0;
+  top:0;
+  height:var(--ag-top);
+
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  padding:8px 12px;
+
+  background:#fff;
+
+  border-bottom:1px solid var(--ag-line);
+
+  font-family:Arial,sans-serif;
+}
+
+#ag-brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:295px;
+}
+
+#ag-logo{
+  width:34px;
+  height:34px;
+
+  border-radius:9px;
+
+  background:#245d79;
+  color:#fff;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-weight:800;
+  font-size:13px;
+}
+
+#ag-title{
+  font-size:15px;
+  font-weight:800;
+  line-height:1.15;
+}
+
+#ag-subtitle{
+  font-size:11px;
+  color:#657789;
+  margin-top:3px;
+}
+
+#ag-selector-slot{
+  display:flex;
+  align-items:center;
+  min-width:205px;
+}
+
+#ag-topbar #plaza-selector{
+  width:100%!important;
+  max-width:240px!important;
+  margin:0!important;
+  height:38px!important;
+
+  padding:0 10px!important;
+
+  border:1px solid #ccd6df!important;
+
+  border-radius:8px!important;
+
+  background:#fff!important;
+
+  font-size:12px!important;
+}
+
+#ag-search-wrap{
+  display:flex;
+  gap:7px;
+  flex:1;
+  max-width:500px;
+}
+
+#ag-world-search{
+  height:38px;
+  flex:1;
+
+  border:1px solid #ccd6df;
+
+  border-radius:8px;
+
+  padding:0 12px;
+}
+
+.ag-topbtn{
+  height:36px;
+
+  border:1px solid #d4dde5;
+
+  border-radius:8px;
+
+  background:#fff;
+
+  padding:0 12px;
+
+  font-weight:700;
+  font-size:11px;
+
+  cursor:pointer;
+}
+
+.ag-topbtn.primary{
+  background:var(--ag-blue);
+  color:#fff;
+  border-color:var(--ag-blue);
+}
+
+#ag-top-actions{
+  margin-left:auto;
+  display:flex;
+  gap:7px;
+}
+
+/* PANEL IZQUIERDO */
+
+#panel{
+  top:var(--ag-top)!important;
+  left:0!important;
+  bottom:0!important;
+  width:var(--ag-left)!important;
+
+  padding:10px 9px 20px!important;
+
+  background:#fff!important;
+
+  border-right:1px solid var(--ag-line)!important;
+
+  overflow-y:auto!important;
+
+  z-index:3100!important;
+}
+
+#panel>h1{
+  font-size:11px!important;
+  letter-spacing:.08em;
+  color:#71808e;
+  font-weight:500!important;
+  margin:5px 0 9px!important;
+  text-transform:uppercase;
+}
+
+#panel .ag-old-plaza-block{
+  display:none!important;
+}
+
+#panel h2{
+  font-size:11px!important;
+
+  margin:12px 0 7px!important;
+
+  padding:9px 8px!important;
+
+  border:1px solid #dbe3ea!important;
+
+  border-radius:8px!important;
+
+  background:#f7f9fb!important;
+
+  text-transform:uppercase;
+}
+
+#ag-layer-search{
+  width:100%;
+  height:36px;
+
+  border:1px solid #ccd6df;
+
+  border-radius:8px;
+
+  padding:0 10px;
+
+  margin:0 0 10px;
+
+  font-size:12px;
+}
+
+.base-layer{
+  font-size:11px!important;
+  margin:7px 8px!important;
+}
+
+.variable{
+  border:1px solid #e0e6ec!important;
+  border-radius:9px!important;
+  margin:6px 0!important;
+  overflow:hidden;
+  background:#fff!important;
+}
+
+.variable-header{
+  padding:9px 10px!important;
+  gap:7px!important;
+  font-size:11px!important;
+  font-weight:700!important;
+}
+
+.variable-header:hover{
+  background:#f7f9fb!important;
+}
+
+.variable-code{
+  display:inline-block;
+  min-width:29px;
+
+  padding:3px 5px;
+
+  border-radius:7px;
+
+  background:#e9f2f7;
+  color:#0a5f89;
+
+  text-align:center;
+
+  font-size:10px;
+}
+
+.subcapas{
+  margin-left:0!important;
+  padding:5px 9px 7px!important;
+  border-top:1px solid #edf1f4!important;
+}
+
+.subcapa{
+  display:grid!important;
+
+  grid-template-columns:18px 1fr auto!important;
+
+  gap:4px!important;
+
+  margin:0!important;
+
+  padding:7px 2px!important;
+
+  border-bottom:1px solid #f0f2f5!important;
+
+  font-size:10px!important;
+}
+
+.status{
+  font-size:8px!important;
+
+  border-radius:8px;
+
+  padding:3px 5px;
+
+  background:#f2f4f6;
+}
+
+.resumen{
+  border:1px solid #dce3e9!important;
+
+  border-radius:9px!important;
+
+  background:#f7f9fb!important;
+
+  padding:10px!important;
+
+  font-size:9px!important;
+}
+
+/* MAPA: SOLO POSICIÓN */
+
+#map{
+  top:var(--ag-top)!important;
+
+  left:var(--ag-left)!important;
+
+  right:var(--ag-right)!important;
+
+  bottom:0!important;
+}
+
+.maplibregl-ctrl-top-right{
+  top:10px!important;
+}
+
+.map-legend{
+  right:calc(var(--ag-right) + 15px)!important;
+  bottom:30px!important;
+}
+
+/* TOOLBAR */
+
+#ag-map-toolbar{
+  position:fixed;
+
+  z-index:3200;
+
+  left:calc(var(--ag-left) + 12px);
+
+  top:calc(var(--ag-top) + 11px);
+
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+
+.ag-mapbtn{
+  height:33px;
+
+  border:1px solid #cfd8e0;
+
+  border-radius:7px;
+
+  background:rgba(255,255,255,.96);
+
+  padding:0 11px;
+
+  font-size:11px;
+  font-weight:700;
+
+  box-shadow:0 2px 6px rgba(0,0,0,.12);
+
+  cursor:pointer;
+}
+
+/* INSPECTOR DERECHO */
+
+#ag-right-panel{
+  position:fixed;
+
+  z-index:3100;
+
+  top:var(--ag-top);
+  right:0;
+  bottom:0;
+
+  width:var(--ag-right);
+
+  background:#fff;
+
+  border-left:1px solid var(--ag-line);
+
+  overflow:auto;
+
+  padding:12px;
+
+  font-family:Arial,sans-serif;
+}
+
+.ag-kicker{
+  font-size:10px;
+  letter-spacing:.08em;
+  color:#71808e;
+  margin:6px 0 10px;
+}
+
+#ag-inspector-status{
+  font-weight:800;
+  font-size:13px;
+  margin-bottom:4px;
+}
+
+.ag-small{
+  font-size:10px;
+  color:#6c7a87;
+  line-height:1.4;
+}
+
+.ag-card{
+  border:1px solid #dce3e9;
+
+  border-radius:10px;
+
+  padding:10px;
+
+  margin:10px 0;
+
+  background:#fff;
+}
+
+.ag-card-title{
+  font-size:10px;
+  font-weight:800;
+  margin-bottom:9px;
+}
+
+.ag-dotline{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:9px;
+  margin:7px 0;
+}
+
+.ag-dot{
+  width:7px;
+  height:7px;
+
+  border-radius:50%;
+
+  background:#1d9760;
+}
+
+.ag-dot.amber{
+  background:#d48a00;
+}
+
+.ag-stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+}
+
+.ag-stat{
+  background:#f6f8fa;
+  border-radius:8px;
+  padding:10px;
+}
+
+.ag-stat b{
+  font-size:18px;
+  display:block;
+}
+
+.ag-stat span{
+  font-size:9px;
+  color:#71808d;
+}
+
+#ag-log{
+  min-height:65px;
+
+  background:#111c26;
+
+  color:#d7e5ef;
+
+  border-radius:7px;
+
+  padding:8px;
+
+  font:8px/1.45 Consolas,monospace;
+
+  white-space:pre-wrap;
+
+  word-break:break-word;
+}
+
+body.ag-hide-inspector{
+  --ag-right:0px;
+}
+
+body.ag-hide-inspector #ag-right-panel{
+  display:none;
+}
+
+@media(max-width:1100px){
+
+  :root{
+    --ag-left:300px;
+    --ag-right:0px;
+  }
+
+  #ag-right-panel{
+    display:none;
+  }
+
+}
+
+</style>
+
+
+<!-- Utilidades de mapas propios: GeoJSON/KML/KMZ/SHP ZIP -->
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://unpkg.com/@mapbox/togeojson@0.16.0/togeojson.js"></script>
+<script src="https://unpkg.com/shpjs@6.1.0/dist/shp.js"></script>
+
+<style id="arec-v14-enhancements">
+.ag14-section{border:1px solid #dfe6ec;border-radius:9px;margin:8px 0;background:#fff;overflow:hidden}
+.ag14-section-head{display:flex;align-items:center;justify-content:space-between;padding:9px 10px;background:#f6f8fa;font-size:10px;font-weight:800;letter-spacing:.035em;cursor:pointer}
+.ag14-section-body{padding:5px 7px}
+.ag14-section-count{font-weight:500;color:#71808d;font-size:9px}
+.ag14-upload-btn{width:100%;height:34px;border:1px dashed #8ba3b5;border-radius:8px;background:#f8fbfd;color:#0b6596;font-weight:700;font-size:10px;cursor:pointer;margin:5px 0}
+.ag14-user-row{display:grid;grid-template-columns:18px 1fr auto;gap:5px;align-items:center;padding:7px 3px;border-bottom:1px solid #edf1f4;font-size:10px}
+.ag14-user-actions{display:flex;gap:4px}.ag14-mini{border:1px solid #d5dde4;background:#fff;border-radius:5px;padding:3px 6px;font-size:9px;cursor:pointer}
+.ag14-chip-wrap{display:flex;gap:5px;flex-wrap:wrap}.ag14-chip{border:1px solid #d5e0e8;background:#f7fafc;border-radius:10px;padding:4px 7px;font-size:8px;cursor:pointer}.ag14-chip.on{background:#e6f4ea;color:#166b35;border-color:#bfe0c9}
+.ag14-range{width:100%}.ag14-value{font-size:9px;color:#687786;text-align:right}
+.ag14-legend-row{display:grid;grid-template-columns:18px 1fr;gap:7px;align-items:center;margin:5px 0;font-size:9px}.ag14-swatch{width:16px;height:16px;border:1px solid #6f7780;border-radius:2px}
+.ag14-method{font-size:9px;line-height:1.45;color:#4f5e6c}.ag14-method b{color:#1f2d38}
+.ag14-feature-block{border-top:1px solid #edf1f4;padding-top:8px;margin-top:8px}.ag14-feature-title{font-size:10px;font-weight:800;margin-bottom:5px}
+.ag14-props{width:100%;border-collapse:collapse;font-size:8px}.ag14-props td{border-bottom:1px solid #eef1f3;padding:3px;vertical-align:top;word-break:break-word}.ag14-props td:first-child{width:42%;font-weight:700;color:#5a6874}
+.ag14-status-good{color:#08752f!important;font-weight:700}.ag14-status-bad{color:#a33a3a!important;font-weight:700}.ag14-status-wait{color:#996000!important;font-weight:700}
+.ag14-macro-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:8px 4px;border-bottom:1px solid #edf1f4;font-size:10px}.ag14-macro-row b{font-size:11px}
+#ag14-file-input{display:none}
+#ag14-plaza-status{font-size:9px;color:#607180;margin:5px 0 0}
+</style>
+
+
+<style id="arec-v15-metropolitan-css">
+#ag15-scope-wrap{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-width:210px;
+}
+#ag15-scope-label{
+  font-size:10px;
+  font-weight:800;
+  color:#627383;
+  text-transform:uppercase;
+}
+#ag15-scope-selector{
+  height:38px;
+  min-width:155px;
+  border:1px solid #ccd6df;
+  border-radius:8px;
+  background:white;
+  padding:0 9px;
+  font-size:11px;
+  font-weight:700;
+}
+.ag15-territorial-block{
+  border:1px solid #dbe3ea;
+  border-radius:9px;
+  background:#fbfcfd;
+  padding:8px;
+  margin-bottom:9px;
+}
+.ag15-territorial-title{
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.06em;
+  color:#627383;
+  margin-bottom:5px;
+}
+.ag15-base-row{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin:6px 0!important;
+}
+.ag15-scope-info{
+  font-size:10px;
+  line-height:1.5;
+  color:#425463;
+}
+.ag15-scope-pill{
+  display:inline-block;
+  margin:2px 3px 2px 0;
+  padding:3px 6px;
+  border-radius:999px;
+  background:#edf4f8;
+  color:#0b5f8f;
+  font-size:8px;
+  font-weight:800;
+}
+.ag15-warning{
+  margin-top:7px;
+  padding:7px;
+  border-radius:7px;
+  background:#fff7e2;
+  color:#755a13;
+  font-size:9px;
+  line-height:1.4;
+}
+@media(max-width:1350px){
+  #ag15-scope-wrap{min-width:170px;}
+  #ag15-scope-label{display:none;}
+  #ag15-scope-selector{min-width:150px;}
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="ag-topbar">
+
+  <div id="ag-brand">
+
+    <div id="ag-logo">
+      AG
+    </div>
+
+    <div>
+
+      <div id="ag-title">
+        AREC GEO · Multiplaza
+      </div>
+
+      <div id="ag-subtitle">
+        23 variables · 19 plazas · visor pre-macropolígonos
+      </div>
+
+    </div>
+
+  </div>
+
+  
+<div id="ag-selector-slot"></div>
+
+<div id="ag15-scope-wrap">
+  <span id="ag15-scope-label">Ámbito</span>
+  <select id="ag15-scope-selector" title="Ámbito territorial del análisis">
+    <option value="city">Ciudad</option>
+    <option value="municipality">Municipio central</option>
+    <option value="metro_analysis" selected>Metrópoli · análisis</option>
+    <option value="metro_official">Metrópoli · oficial</option>
+  </select>
+</div>
+
+
+  <div id="ag-search-wrap">
+
+    <input
+      id="ag-world-search"
+      placeholder="Buscar cualquier lugar del mundo..."
+    >
+
+    <button
+      class="ag-topbtn"
+      id="ag-search-btn"
+    >
+      Buscar
+    </button>
+
+  </div>
+
+  <div id="ag-top-actions">
+
+    <button
+      class="ag-topbtn"
+      id="ag-plazas-btn"
+    >
+      Plazas
+    </button>
+
+    <button
+      class="ag-topbtn"
+      id="ag-mundo-btn"
+    >
+      Mundo
+    </button>
+
+    <button
+      class="ag-topbtn"
+      id="ag-inspector-btn"
+    >
+      Inspector
+    </button>
+
+    <button
+      class="ag-topbtn primary"
+      id="ag-procesar-btn"
+    >
+      Procesar área
+    </button>
+
+  </div>
+
+</div>
+
+
+<div id="panel">
+
+<h1>AREC GEO</h1>
+
+<div style="font-size:13px;margin-bottom:10px;"><b>AREC GEO · Multiplaza V14</b></div><div style="margin:8px 0 14px 0;"><label style="font-size:12px;font-weight:bold;">PLAZA</label><select id="plaza-selector" style="width:100%;margin-top:5px;padding:7px;border:1px solid #bbb;border-radius:4px;background:white;"><option value="JRZ">JRZ · Ciudad Juárez</option>
+<option value="CHH">CHH · Chihuahua</option>
+<option value="DEL">DEL · Delicias</option>
+<option value="SLT">SLT · Saltillo</option>
+<option value="TOR">TOR · Torreón</option>
+<option value="MTY">MTY · Monterrey</option>
+<option value="HMO">HMO · Hermosillo</option>
+<option value="OBR">OBR · Ciudad Obregón</option>
+<option value="MXL">MXL · Mexicali</option>
+<option value="TIJ">TIJ · Tijuana</option>
+<option value="GDL">GDL · Guadalajara</option>
+<option value="QRO">QRO · Santiago de Querétaro</option>
+<option value="VER">VER · Veracruz</option>
+<option value="LEO">LEO · León de los Aldama</option>
+<option value="PUE">PUE · Heroica Puebla de Zaragoza</option>
+<option value="TOL">TOL · Toluca de Lerdo</option>
+<option value="CAN">CAN · Cancún</option>
+<option value="SLP">SLP · San Luis Potosí</option>
+<option value="AGS">AGS · Aguascalientes</option></select><div id="plaza-carga-status" style="font-size:10px;color:#666;margin-top:5px;line-height:1.35;">Preparando visor…</div></div>
+
+<input id="ag-layer-search" placeholder="Buscar variable o subcapa...">
+
+<h2>BASE TERRITORIAL</h2>
+
+<div class="ag15-territorial-block">
+  <div class="ag15-territorial-title">ÁMBITO METROPOLITANO</div>
+
+  <label class="base-layer ag15-base-row">
+    <input type="checkbox" id="ag15-toggle-metro-official" checked>
+    Límite de metrópoli oficial
+  </label>
+
+  <label class="base-layer ag15-base-row">
+    <input type="checkbox" id="ag15-toggle-analysis" checked>
+    Ámbito metropolitano de análisis
+  </label>
+
+  <label class="base-layer ag15-base-row">
+    <input type="checkbox" id="ag15-toggle-municipios">
+    Municipios metropolitanos
+  </label>
+
+  <label class="base-layer ag15-base-row">
+    <input type="checkbox" id="ag15-toggle-central">
+    Municipio central
+  </label>
+</div>
+
+
+<div class="base-layer">
+<label>
+<input type="checkbox" id="toggle-localidad" checked>
+Límite principal del ámbito
+</label>
+</div>
+
+<div class="base-layer">
+<label>
+<input type="checkbox" id="toggle-ageb" checked>
+AGEB urbanas
+</label>
+</div>
+
+<div class="base-layer">
+<label>
+<input type="checkbox" id="toggle-grid" checked>
+Malla 500 × 500 m
+</label>
+</div>
+
+<h2>23 VARIABLES P1</h2>
+
+<div id="variables"></div>
+
+<div class="resumen">
+
+<b>Base territorial cargada</b>
+
+<br><br>
+
+Plaza: JRZ<br>
+Municipio: 08037<br>
+Localidad: 080370001<br>
+AGEB: 663<br>
+Celdas: 1,420<br>
+Subcapas catalogadas: 66
+
+</div>
+
+</div>
+
+<div id="map"></div>
+
+<div
+    id="legend-agua-drenaje"
+    class="map-legend"
+    style="display:none;"
+>
+
+    <div class="map-legend-title">
+        V14 · Agua y drenaje
+    </div>
+
+    <div class="legend-row">
+        <div
+            class="legend-swatch"
+            style="background:#2ca25f;"
+        ></div>
+
+        <span>
+            Agua >75% y drenaje >75%
+        </span>
+    </div>
+
+    <div class="legend-row">
+        <div
+            class="legend-swatch"
+            style="background:#fec44f;"
+        ></div>
+
+        <span>
+            Solo uno supera 75%
+        </span>
+    </div>
+
+    <div class="legend-row">
+        <div
+            class="legend-swatch"
+            style="background:#de2d26;"
+        ></div>
+
+        <span>
+            Ninguno supera 75%
+        </span>
+    </div>
+
+    <div class="legend-row">
+        <div
+            class="legend-swatch"
+            style="background:#bdbdbd;"
+        ></div>
+
+        <span>
+            Datos insuficientes
+        </span>
+    </div>
+
+    <div class="legend-note">
+        Indicador proxy basado en los porcentajes
+        separados de agua y drenaje del Censo 2020.
+        No representa la intersección exacta de
+        viviendas que cuentan simultáneamente
+        con ambos servicios.
+    </div>
+
+</div>
+
+
+<div
+    id="legend-zcu-arec"
+    class="map-legend"
+    style="display:none;"
+>
+
+    <div class="map-legend-title">
+        V14 · Clasificación AREC
+    </div>
+
+    <div class="legend-row">
+        <div
+            class="legend-swatch"
+            style="background:#1b7837;"
+        ></div>
+        <span>Consolidada</span>
+    </div>
+
+    <div class="legend-row">
+        <div
+            class="legend-swatch"
+            style="background:#5aae61;"
+        ></div>
+        <span>Semiconsolidada</span>
+    </div>
+
+    <div class="legend-row">
+        <div
+            class="legend-swatch"
+            style="background:#fdae61;"
+        ></div>
+        <span>En proceso</span>
+    </div>
+
+    <div class="legend-row">
+        <div
+            class="legend-swatch"
+            style="background:#2b83ba;"
+        ></div>
+        <span>Evaluación con empleo</span>
+    </div>
+
+    <div class="legend-row">
+        <div
+            class="legend-swatch"
+            style="background:#762a83;"
+        ></div>
+        <span>Potencial económico</span>
+    </div>
+
+    <div class="legend-row">
+        <div
+            class="legend-swatch"
+            style="background:#bdbdbd;"
+        ></div>
+        <span>Sin clasificar</span>
+    </div>
+
+    <div class="legend-note">
+        Réplica AREC V14 provisional.
+        No equivale todavía a la ZCU oficial validada.
+    </div>
+
+</div>
+
+<script type="module">
+
+import * as maplibregl from
+'https://unpkg.com/maplibre-gl@6.11.2/dist/maplibre-gl.mjs';
+
+const catalogo = {"version": "0.1", "proyecto": "AREC GEO Web MVP", "nota_general": "Fuente única de verdad del árbol de 23 variables. Los parámetros marcados como 'propuesta inicial por validar' no son definitivos.", "plaza_piloto": {"codigo": "JRZ", "nombre": "Ciudad Juárez", "municipio_central": "08037"}, "crs_calculo": "EPSG:32613", "crs_visor": "EPSG:4326", "celda_m": 500, "vocabularios": {"tipo": ["publica", "mixta", "interna", "manual"], "funcion_espacial": ["proximidad", "veto_interseccion", "penalizacion_interseccion", "categorica", "atributo_territorial", "densidad", "clasificacion_normativa", "por_definir"], "efecto": ["favorable", "restrictivo", "mixto", "neutro", "por_definir"], "estado_subcapa": ["pendiente_fuente_publica", "pendiente_carga_manual", "bloqueada_interna_mvp", "activa_mvp"]}, "resultados_separados": ["celdas_score_arec", "macro_tipo_1_oportunidad_urbana", "macro_tipo_2_tierra_compra"], "variables": [{"id": 1, "clave": "PDU", "nombre": "Plan de Desarrollo Urbano de la ciudad", "tipo": "publica", "fuente_base": "PDU municipal / IMPLAN (carga manual)", "orden_mvp": null, "subcapas": [{"id": "uso_suelo_pdu", "nombre": "Uso de suelo PDU", "geometria": "poligono", "fuente": "PDU municipal", "funcion_espacial": "categorica", "efecto": "mixto", "estado": "pendiente_carga_manual"}, {"id": "zonificacion_habitacional", "nombre": "Zonificación habitacional", "geometria": "poligono", "fuente": "PDU municipal", "funcion_espacial": "categorica", "efecto": "favorable", "estado": "pendiente_carga_manual"}, {"id": "reservas_crecimiento", "nombre": "Reservas de crecimiento", "geometria": "poligono", "fuente": "PDU municipal", "funcion_espacial": "categorica", "efecto": "favorable", "estado": "pendiente_carga_manual"}]}, {"id": 2, "clave": "Parques industriales", "nombre": "Crecimiento de parques industriales", "tipo": "mixta", "fuente_base": "DENUE + parques + series", "orden_mvp": null, "subcapas": [{"id": "parques_industriales", "nombre": "Parques industriales", "geometria": "poligono", "fuente": "Carga manual / fuentes sectoriales", "funcion_espacial": "por_definir", "efecto": "por_definir", "estado": "pendiente_carga_manual"}, {"id": "empleo_industrial_denue", "nombre": "Empleo industrial (DENUE)", "geometria": "punto", "fuente": "INEGI DENUE", "funcion_espacial": "densidad", "efecto": "por_definir", "estado": "pendiente_fuente_publica"}, {"id": "crecimiento_parques_serie", "nombre": "Crecimiento de parques (serie)", "geometria": "poligono", "fuente": "Carga manual", "funcion_espacial": "atributo_territorial", "efecto": "por_definir", "estado": "pendiente_carga_manual"}]}, {"id": 3, "clave": "Competencia", "nombre": "Posicionamiento de la competencia", "tipo": "mixta", "fuente_base": "Proyectos georreferenciados por plaza", "orden_mvp": null, "subcapas": [{"id": "proyectos_competencia", "nombre": "Proyectos de competencia", "geometria": "punto", "fuente": "Carga manual", "funcion_espacial": "por_definir", "efecto": "por_definir", "estado": "pendiente_carga_manual"}, {"id": "oferta_vivienda_registrada", "nombre": "Oferta de vivienda registrada", "geometria": "punto", "fuente": "RUV / SNIIV", "funcion_espacial": "por_definir", "efecto": "por_definir", "estado": "pendiente_fuente_publica"}]}, {"id": 4, "clave": "Equipamientos", "nombre": "Equipamientos existentes y por desarrollar", "tipo": "mixta", "fuente_base": "INEGI / DENUE + capas futuras", "orden_mvp": null, "subcapas": [{"id": "equipamientos_existentes", "nombre": "Equipamientos existentes", "geometria": "punto", "fuente": "INEGI DENUE", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_fuente_publica", "parametros_iniciales": {"radio_m": 1500, "isocrona_min": 15, "decaimiento": "lineal", "nota": "propuesta inicial por validar"}}, {"id": "equipamientos_por_desarrollar", "nombre": "Equipamientos por desarrollar", "geometria": "poligono", "fuente": "Carga manual", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_carga_manual", "parametros_iniciales": {"radio_m": 1500, "isocrona_min": 15, "decaimiento": "lineal", "nota": "propuesta inicial por validar"}}]}, {"id": 5, "clave": "Riesgos", "nombre": "Zonas de riesgo", "tipo": "publica", "fuente_base": "Atlas de riesgos / SSPC / capas públicas", "orden_mvp": 8, "subcapas": [{"id": "inundacion", "nombre": "Inundación", "geometria": "poligono", "fuente": "Atlas de riesgos / INEGI", "funcion_espacial": "penalizacion_interseccion", "efecto": "restrictivo", "estado": "pendiente_fuente_publica"}, {"id": "geologico_remocion", "nombre": "Riesgo geológico / remoción", "geometria": "poligono", "fuente": "Atlas de riesgos / INEGI", "funcion_espacial": "penalizacion_interseccion", "efecto": "restrictivo", "estado": "pendiente_fuente_publica"}, {"id": "incendios", "nombre": "Incendios", "geometria": "poligono", "fuente": "Fuentes públicas", "funcion_espacial": "penalizacion_interseccion", "efecto": "restrictivo", "estado": "pendiente_fuente_publica"}, {"id": "otros_riesgos_atlas", "nombre": "Otros riesgos del atlas", "geometria": "poligono", "fuente": "Atlas de riesgos municipal", "funcion_espacial": "penalizacion_interseccion", "efecto": "restrictivo", "estado": "pendiente_carga_manual"}]}, {"id": 6, "clave": "Zonas sensibles", "nombre": "Zonas sensibles", "tipo": "publica", "fuente_base": "CONANP / CONAGUA / ambiental", "orden_mvp": 9, "subcapas": [{"id": "anp_conanp", "nombre": "Áreas naturales protegidas", "geometria": "poligono", "fuente": "CONANP", "funcion_espacial": "veto_interseccion", "efecto": "restrictivo", "estado": "pendiente_fuente_publica", "usos": ["score", "zcu_zonas_no_aptas"]}, {"id": "cuerpos_agua", "nombre": "Cuerpos de agua", "geometria": "poligono", "fuente": "INEGI / CONAGUA", "funcion_espacial": "veto_interseccion", "efecto": "restrictivo", "estado": "pendiente_fuente_publica", "usos": ["score", "zcu_zonas_no_aptas"]}, {"id": "vedas_hidricas", "nombre": "Vedas hídricas", "geometria": "poligono", "fuente": "CONAGUA", "funcion_espacial": "penalizacion_interseccion", "efecto": "restrictivo", "estado": "pendiente_fuente_publica"}]}, {"id": 7, "clave": "Vías", "nombre": "Desarrollo de vías de comunicación", "tipo": "mixta", "fuente_base": "INEGI red vial + proyectos futuros", "orden_mvp": 6, "subcapas": [{"id": "vias_primarias", "nombre": "Vías primarias", "geometria": "linea", "fuente": "INEGI Red Nacional de Caminos", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_fuente_publica", "parametros_iniciales": {"radio_m": 1500, "nota": "propuesta inicial por validar"}, "usos": ["score", "zcu"]}, {"id": "red_vial_osm", "nombre": "Red vial (OSM)", "geometria": "linea", "fuente": "OpenStreetMap", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_fuente_publica"}, {"id": "proyectos_viales_futuros", "nombre": "Proyectos viales futuros", "geometria": "linea", "fuente": "Carga manual", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_carga_manual"}]}, {"id": 8, "clave": "Zonas industriales", "nombre": "Desarrollo de zonas industriales", "tipo": "mixta", "fuente_base": "DENUE + huella + capas industriales", "orden_mvp": 7, "subcapas": [{"id": "industria_denue", "nombre": "Industria (DENUE)", "geometria": "punto", "fuente": "INEGI DENUE", "funcion_espacial": "por_definir", "efecto": "por_definir", "estado": "pendiente_fuente_publica"}, {"id": "zonas_industriales", "nombre": "Zonas industriales", "geometria": "poligono", "fuente": "Carga manual / huella", "funcion_espacial": "por_definir", "efecto": "por_definir", "estado": "pendiente_carga_manual"}], "nota": "El efecto depende del segmento: negativo para vivienda premium, positivo indirecto para demanda de vivienda social. Definir con el negocio."}, {"id": 9, "clave": "Zonas comerciales", "nombre": "Desarrollo de zonas comerciales", "tipo": "publica", "fuente_base": "DENUE + centros comerciales", "orden_mvp": 4, "subcapas": [{"id": "comercios_denue", "nombre": "Comercios (DENUE)", "geometria": "punto", "fuente": "INEGI DENUE", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_fuente_publica", "parametros_iniciales": {"radio_m": 1500, "isocrona_min": 15, "decaimiento": "lineal", "nota": "propuesta inicial por validar"}}, {"id": "abasto_mercados", "nombre": "Centros de abasto y mercados", "geometria": "punto", "fuente": "INEGI DENUE", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_fuente_publica", "parametros_iniciales": {"radio_m": 1500, "isocrona_min": 15, "decaimiento": "lineal", "nota": "propuesta inicial por validar"}, "usos": ["score", "zcu"]}, {"id": "centros_comerciales", "nombre": "Centros comerciales", "geometria": "punto", "fuente": "DENUE / OSM", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_fuente_publica", "parametros_iniciales": {"radio_m": 1500, "isocrona_min": 15, "decaimiento": "lineal", "nota": "propuesta inicial por validar"}}]}, {"id": 10, "clave": "Salud", "nombre": "Desarrollo de zonas para salud (hospitales y clínicas)", "tipo": "publica", "fuente_base": "CLUES / DENUE + capacidad", "orden_mvp": 3, "subcapas": [{"id": "hospitales", "nombre": "Hospitales", "geometria": "punto", "fuente": "CLUES / DENUE", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_fuente_publica", "parametros_iniciales": {"radio_m": 1500, "isocrona_min": 15, "decaimiento": "lineal", "nota": "propuesta inicial por validar"}, "usos": ["score", "zcu"]}, {"id": "clinicas_centros_salud", "nombre": "Clínicas y centros de salud", "geometria": "punto", "fuente": "CLUES / DENUE", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_fuente_publica", "parametros_iniciales": {"radio_m": 1500, "isocrona_min": 15, "decaimiento": "lineal", "nota": "propuesta inicial por validar"}, "usos": ["score", "zcu"]}]}, {"id": 11, "clave": "Universidades", "nombre": "Desarrollo de universidades", "tipo": "publica", "fuente_base": "SEP / DENUE + matrícula", "orden_mvp": 5, "subcapas": [{"id": "universidades", "nombre": "Universidades", "geometria": "punto", "fuente": "SEP / DENUE", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_fuente_publica", "parametros_iniciales": {"radio_m": 1500, "isocrona_min": 15, "decaimiento": "lineal", "nota": "propuesta inicial por validar"}}]}, {"id": 12, "clave": "Educación", "nombre": "Desarrollo de zonas educativas", "tipo": "publica", "fuente_base": "SEP / INEGI / RUV", "orden_mvp": 2, "subcapas": [{"id": "primarias", "nombre": "Escuelas primarias", "geometria": "punto", "fuente": "SEP / DENUE", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_fuente_publica", "parametros_iniciales": {"radio_m": 1500, "isocrona_min": 15, "decaimiento": "lineal", "nota": "propuesta inicial por validar"}, "usos": ["score", "zcu"]}, {"id": "secundarias", "nombre": "Escuelas secundarias", "geometria": "punto", "fuente": "SEP / DENUE", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_fuente_publica", "parametros_iniciales": {"radio_m": 1500, "isocrona_min": 15, "decaimiento": "lineal", "nota": "propuesta inicial por validar"}, "usos": ["score", "zcu"]}, {"id": "preescolar", "nombre": "Preescolar", "geometria": "punto", "fuente": "SEP / DENUE", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_fuente_publica", "parametros_iniciales": {"radio_m": 1500, "isocrona_min": 15, "decaimiento": "lineal", "nota": "propuesta inicial por validar"}}, {"id": "media_superior", "nombre": "Media superior", "geometria": "punto", "fuente": "SEP / DENUE", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_fuente_publica", "parametros_iniciales": {"radio_m": 1500, "isocrona_min": 15, "decaimiento": "lineal", "nota": "propuesta inicial por validar"}}]}, {"id": 13, "clave": "Crecimiento urbano", "nombre": "Crecimiento urbano orgánico", "tipo": "publica", "fuente_base": "GHSL 2015–2025 + Open Buildings", "orden_mvp": 10, "subcapas": [{"id": "huella_2015", "nombre": "Huella construida 2015", "geometria": "raster", "fuente": "GHSL", "funcion_espacial": "atributo_territorial", "efecto": "neutro", "estado": "pendiente_fuente_publica"}, {"id": "huella_2025", "nombre": "Huella construida 2025", "geometria": "raster", "fuente": "GHSL", "funcion_espacial": "atributo_territorial", "efecto": "neutro", "estado": "pendiente_fuente_publica"}, {"id": "expansion_2015_2025", "nombre": "Expansión 2015–2025", "geometria": "poligono", "fuente": "GHSL (derivada)", "funcion_espacial": "atributo_territorial", "efecto": "por_definir", "estado": "pendiente_fuente_publica"}, {"id": "expansion_mayor_2ha", "nombre": "Expansión de 2 ha o más", "geometria": "poligono", "fuente": "GHSL (derivada)", "funcion_espacial": "atributo_territorial", "efecto": "por_definir", "estado": "pendiente_fuente_publica"}]}, {"id": 14, "clave": "Consolidación", "nombre": "Polígonos/cuadrantes de consolidación urbana", "tipo": "publica", "fuente_base": "INEGI AGEB + ZCU Infonavit", "orden_mvp": 1, "subcapas": [{"id": "zcu_oficial_infonavit", "nombre": "ZCU oficial (referencia Infonavit)", "geometria": "celdas", "fuente": "Infonavit – Visor ZCU", "funcion_espacial": "clasificacion_normativa", "efecto": "por_definir", "estado": "pendiente_carga_manual", "usos": ["referencia_validacion"]}, {"id": "zcu_calculada_arec", "nombre": "ZCU calculada por AREC GEO", "geometria": "celdas", "fuente": "Réplica de la metodología Infonavit", "funcion_espacial": "clasificacion_normativa", "efecto": "por_definir", "estado": "pendiente_fuente_publica", "usos": ["score", "validacion"]}, {"id": "densidad_vivienda_ageb", "nombre": "Densidad de vivienda (AGEB)", "geometria": "poligono", "fuente": "INEGI Censo + Marco Geoestadístico", "funcion_espacial": "densidad", "efecto": "neutro", "estado": "pendiente_fuente_publica"}, {"id": "densidad_empleo_ageb", "nombre": "Densidad de empleo (AGEB)", "geometria": "poligono", "fuente": "INEGI DENUE + Marco Geoestadístico", "funcion_espacial": "densidad", "efecto": "neutro", "estado": "pendiente_fuente_publica"}, {"id": "agua_drenaje_ageb", "nombre": "Viviendas con agua y drenaje (AGEB)", "geometria": "poligono", "fuente": "INEGI Censo", "funcion_espacial": "atributo_territorial", "efecto": "favorable", "estado": "pendiente_fuente_publica"}], "nota": "Replicar primero a nivel AGEB, igual que Infonavit, para poder comparar. Umbrales en config/zcu_infonavit.json."}, {"id": 15, "clave": "Tierras RUBA", "nombre": "Ubicación de tierras compradas por RUBA", "tipo": "interna", "fuente_base": "RUBA interno", "orden_mvp": null, "subcapas": [{"id": "tierras_ruba", "nombre": "Tierras compradas", "geometria": "poligono", "fuente": "RUBA interno", "funcion_espacial": "por_definir", "efecto": "por_definir", "estado": "bloqueada_interna_mvp"}], "nota": "Visible en el árbol, bloqueada en el MVP. Se permite un ejemplo sintético claramente marcado como ficticio."}, {"id": 16, "clave": "Desarrollos RUBA", "nombre": "Ubicación de desarrollos inmobiliarios activos de RUBA", "tipo": "interna", "fuente_base": "RUBA interno", "orden_mvp": null, "subcapas": [{"id": "desarrollos_ruba", "nombre": "Desarrollos activos", "geometria": "poligono", "fuente": "RUBA interno", "funcion_espacial": "por_definir", "efecto": "por_definir", "estado": "bloqueada_interna_mvp"}]}, {"id": 17, "clave": "Banco de tierras", "nombre": "Banco de tierras identificadas", "tipo": "interna", "fuente_base": "RUBA interno / PIIT", "orden_mvp": null, "subcapas": [{"id": "banco_tierras", "nombre": "Banco de tierras", "geometria": "poligono", "fuente": "RUBA interno / PIIT", "funcion_espacial": "por_definir", "efecto": "por_definir", "estado": "bloqueada_interna_mvp"}]}, {"id": 18, "clave": "REC vigente", "nombre": "Zonas y polígonos de interés vigentes", "tipo": "interna", "fuente_base": "PIIT / REC histórica", "orden_mvp": null, "subcapas": [{"id": "rec_vigente", "nombre": "Zonas y polígonos REC vigentes", "geometria": "poligono", "fuente": "PIIT / REC", "funcion_espacial": "por_definir", "efecto": "por_definir", "estado": "bloqueada_interna_mvp"}]}, {"id": 19, "clave": "Servicios", "nombre": "Infraestructura de servicios: agua, electricidad, gas, drenaje", "tipo": "mixta", "fuente_base": "CONAGUA + organismos + plaza", "orden_mvp": 11, "subcapas": [{"id": "agua_acuiferos", "nombre": "Acuíferos y disponibilidad", "geometria": "poligono", "fuente": "CONAGUA", "funcion_espacial": "atributo_territorial", "efecto": "mixto", "estado": "pendiente_fuente_publica"}, {"id": "agua_pozos_piezometria", "nombre": "Pozos y piezometría", "geometria": "punto", "fuente": "CONAGUA", "funcion_espacial": "atributo_territorial", "efecto": "mixto", "estado": "pendiente_fuente_publica"}, {"id": "drenaje_cobertura", "nombre": "Cobertura de drenaje (AGEB)", "geometria": "poligono", "fuente": "INEGI Censo", "funcion_espacial": "atributo_territorial", "efecto": "favorable", "estado": "pendiente_fuente_publica"}, {"id": "electricidad_lineas", "nombre": "Líneas eléctricas", "geometria": "linea", "fuente": "OpenStreetMap", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_fuente_publica"}, {"id": "electricidad_subestaciones", "nombre": "Subestaciones", "geometria": "punto", "fuente": "OpenStreetMap", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_fuente_publica"}, {"id": "gas", "nombre": "Red de gas", "geometria": "linea", "fuente": "Carga manual", "funcion_espacial": "proximidad", "efecto": "favorable", "estado": "pendiente_carga_manual"}], "nota": "Una subestación cercana no implica factibilidad de servicio; tratar como indicio, no como garantía."}, {"id": 20, "clave": "ESG", "nombre": "Variables de Sostenibilidad/ESG", "tipo": "mixta", "fuente_base": "Teledetección + ambiental + social", "orden_mvp": null, "subcapas": [{"id": "vegetacion_ndvi", "nombre": "Vegetación (NDVI)", "geometria": "raster", "fuente": "Teledetección", "funcion_espacial": "atributo_territorial", "efecto": "favorable", "estado": "pendiente_fuente_publica"}, {"id": "islas_calor", "nombre": "Isla de calor", "geometria": "raster", "fuente": "Teledetección", "funcion_espacial": "atributo_territorial", "efecto": "restrictivo", "estado": "pendiente_fuente_publica"}, {"id": "contexto_social", "nombre": "Contexto social", "geometria": "poligono", "fuente": "INEGI / CONEVAL", "funcion_espacial": "atributo_territorial", "efecto": "por_definir", "estado": "pendiente_fuente_publica"}]}, {"id": 21, "clave": "Proveedurías", "nombre": "Ubicación de proveedurías", "tipo": "interna", "fuente_base": "RUBA/proveedores + red logística", "orden_mvp": null, "subcapas": [{"id": "proveedurias", "nombre": "Proveedurías", "geometria": "punto", "fuente": "RUBA interno", "funcion_espacial": "por_definir", "efecto": "por_definir", "estado": "bloqueada_interna_mvp"}]}, {"id": 22, "clave": "Demanda", "nombre": "Demanda de vivienda por tipo y zona", "tipo": "mixta", "fuente_base": "INEGI + vivienda/crédito + interno", "orden_mvp": 12, "subcapas": [{"id": "viviendas_censo_ageb", "nombre": "Viviendas por AGEB (Censo)", "geometria": "poligono", "fuente": "INEGI Censo", "funcion_espacial": "atributo_territorial", "efecto": "neutro", "estado": "pendiente_fuente_publica"}, {"id": "viviendas_deshabitadas", "nombre": "Viviendas deshabitadas", "geometria": "poligono", "fuente": "INEGI Censo", "funcion_espacial": "atributo_territorial", "efecto": "restrictivo", "estado": "pendiente_fuente_publica"}, {"id": "residencial_existente", "nombre": "Residencial existente", "geometria": "poligono", "fuente": "OSM / INEGI", "funcion_espacial": "atributo_territorial", "efecto": "neutro", "estado": "pendiente_fuente_publica"}, {"id": "vivienda_vertical", "nombre": "Vivienda vertical", "geometria": "poligono", "fuente": "Fuentes públicas / inferencia", "funcion_espacial": "atributo_territorial", "efecto": "neutro", "estado": "pendiente_fuente_publica"}, {"id": "vivienda_media", "nombre": "Vivienda media", "geometria": "poligono", "fuente": "Fuentes públicas / inferencia", "funcion_espacial": "atributo_territorial", "efecto": "neutro", "estado": "pendiente_fuente_publica"}, {"id": "vivienda_interes_social", "nombre": "Vivienda de interés social", "geometria": "poligono", "fuente": "RUV / SNIIV / inferencia", "funcion_espacial": "atributo_territorial", "efecto": "neutro", "estado": "pendiente_fuente_publica"}, {"id": "residencial_premium", "nombre": "Residencial premium", "geometria": "poligono", "fuente": "Inferencia", "funcion_espacial": "atributo_territorial", "efecto": "neutro", "estado": "pendiente_fuente_publica"}, {"id": "residencial_corredor_industrial", "nombre": "Residencial ligado a corredores industriales", "geometria": "poligono", "fuente": "Inferencia", "funcion_espacial": "atributo_territorial", "efecto": "neutro", "estado": "pendiente_fuente_publica"}, {"id": "vivienda_bienestar", "nombre": "Vivienda para el Bienestar", "geometria": "punto", "fuente": "Fuentes públicas", "funcion_espacial": "atributo_territorial", "efecto": "neutro", "estado": "pendiente_fuente_publica"}, {"id": "rezago_social", "nombre": "Rezago social", "geometria": "poligono", "fuente": "CONEVAL", "funcion_espacial": "atributo_territorial", "efecto": "neutro", "estado": "pendiente_fuente_publica"}], "nota": "Las subcapas inferidas deben marcarse como inferencia, no como dato oficial."}, {"id": 23, "clave": "Situación administrativa", "nombre": "Situación política/administrativa de la plaza", "tipo": "manual", "fuente_base": "Tiempos administrativos; sin scoring partidista", "orden_mvp": null, "subcapas": [{"id": "tiempos_administrativos", "nombre": "Tiempos administrativos", "geometria": "tabla", "fuente": "Captura manual", "funcion_espacial": "categorica", "efecto": "por_definir", "estado": "pendiente_carga_manual"}], "nota": "Sin scoring partidista."}]};
+
+const localidad = {"type":"FeatureCollection","features":[]};
+const ageb = {"type":"FeatureCollection","features":[]};
+const grid = {"type":"FeatureCollection","features":[]};
+const densidadVivienda = {"type":"FeatureCollection","features":[]};
+const densidadEmpleo = {"type":"FeatureCollection","features":[]};
+const serviciosAguaDrenaje = {"type":"FeatureCollection","features":[]};
+// -----------------------------------------------------
+// V14 · CLASIFICACIÓN ZCU AREC · PROVISIONAL
+// -----------------------------------------------------
+const zcuCalculadaArec = {"type":"FeatureCollection","features":[]};
+const bounds =
+ [[-106.59231482998452, 31.52365001735507], [-106.29406625754808, 31.783902074397268]];
+
+
+// ---------------------------------------------------------
+// MAPA
+// ---------------------------------------------------------
+
+const map = new maplibregl.Map({
+
+    container: 'map',
+
+    style:
+    'https://tiles.openfreemap.org/styles/liberty',
+
+    center: [-106.45, 31.69],
+
+    zoom: 10
+
+});
+
+map.addControl(
+    new maplibregl.NavigationControl(),
+    'top-right'
+);
+
+map.on('load', () => {
+
+    // LOCALIDAD
+    map.addSource('localidad', {
+        type: 'geojson',
+        data: localidad
+    });
+
+    map.addLayer({
+        id: 'localidad-line',
+        type: 'line',
+        source: 'localidad',
+        paint: {
+            'line-color': '#111',
+            'line-width': 3
+        }
+    });
+
+    // AGEB
+    map.addSource('ageb', {
+        type: 'geojson',
+        data: ageb
+    });
+
+    map.addLayer({
+        id: 'ageb-line',
+        type: 'line',
+        source: 'ageb',
+        paint: {
+            'line-color': '#555',
+            'line-width': 1,
+            'line-opacity': 0.45
+        }
+    });
+
+    // -----------------------------------------------------
+    // V14 · DENSIDAD DE VIVIENDA POR AGEB · CENSO 2020
+    // -----------------------------------------------------
+
+    map.addSource('v14-densidad-vivienda', {
+        type: 'geojson',
+        data: densidadVivienda
+    });
+
+    map.addLayer({
+        id: 'v14-densidad-vivienda-fill',
+        type: 'fill',
+        source: 'v14-densidad-vivienda',
+
+        layout: {
+            visibility: 'none'
+        },
+
+        paint: {
+            'fill-color': [
+                'step',
+                ['coalesce', ['get', 'DENS_VIV_HA'], 0],
+
+                '#f7fcf5',
+                10, '#e5f5e0',
+                20, '#c7e9c0',
+                30, '#a1d99b',
+                40, '#74c476',
+                50, '#238b45'
+            ],
+
+            'fill-opacity': 0.72
+        }
+    });
+
+    map.addLayer({
+        id: 'v14-densidad-vivienda-line',
+        type: 'line',
+        source: 'v14-densidad-vivienda',
+
+        layout: {
+            visibility: 'none'
+        },
+
+        paint: {
+            'line-color': '#222',
+            'line-width': 0.6,
+            'line-opacity': 0.75
+        }
+    });
+
+
+    // -----------------------------------------------------
+    // V14 · DENSIDAD DE EMPLEO POR AGEB
+    // DENUE + MARCO GEOESTADÍSTICO 2020
+    // -----------------------------------------------------
+
+    map.addSource('v14-densidad-empleo', {
+        type: 'geojson',
+        data: densidadEmpleo
+    });
+
+    map.addLayer({
+        id: 'v14-densidad-empleo-fill',
+        type: 'fill',
+        source: 'v14-densidad-empleo',
+
+        layout: {
+            visibility: 'none'
+        },
+
+        paint: {
+            'fill-color': [
+                'step',
+                ['coalesce', ['get', 'DENS_EMPLEO_HA'], 0],
+
+                '#fff5f0',
+                5,  '#fee0d2',
+                10, '#fcbba1',
+                20, '#fc9272',
+                40, '#fb6a4a',
+                80, '#de2d26',
+                120, '#a50f15'
+            ],
+
+            'fill-opacity': 0.72
+        }
+    });
+
+    map.addLayer({
+        id: 'v14-densidad-empleo-line',
+        type: 'line',
+        source: 'v14-densidad-empleo',
+
+        layout: {
+            visibility: 'none'
+        },
+
+        paint: {
+            'line-color': '#222',
+            'line-width': 0.6,
+            'line-opacity': 0.75
+        }
+    });
+
+
+    // -----------------------------------------------------
+    // V14 · AGUA Y DRENAJE POR AGEB
+    // CENSO 2020
+    // -----------------------------------------------------
+
+    map.addSource('v14-agua-drenaje', {
+        type: 'geojson',
+        data: serviciosAguaDrenaje
+    });
+
+    map.addLayer({
+        id: 'v14-agua-drenaje-fill',
+        type: 'fill',
+        source: 'v14-agua-drenaje',
+
+        layout: {
+            visibility: 'none'
+        },
+
+        paint: {
+
+            'fill-color': [
+                'case',
+
+                // Sin información suficiente
+                [
+                    'any',
+                    ['==', ['get', 'AGUA_PCT'], null],
+                    ['==', ['get', 'DRENAJE_PCT'], null]
+                ],
+                '#bdbdbd',
+
+                // Ambos >75%
+                [
+                    'all',
+                    ['>', ['get', 'AGUA_PCT'], 75],
+                    ['>', ['get', 'DRENAJE_PCT'], 75]
+                ],
+                '#2ca25f',
+
+                // Solo uno >75%
+                [
+                    'any',
+                    ['>', ['get', 'AGUA_PCT'], 75],
+                    ['>', ['get', 'DRENAJE_PCT'], 75]
+                ],
+                '#fec44f',
+
+                // Ninguno >75%
+                '#de2d26'
+            ],
+
+            'fill-opacity': 0.72
+        }
+    });
+
+    map.addLayer({
+        id: 'v14-agua-drenaje-line',
+        type: 'line',
+        source: 'v14-agua-drenaje',
+
+        layout: {
+            visibility: 'none'
+        },
+
+        paint: {
+            'line-color': '#222',
+            'line-width': 0.6,
+            'line-opacity': 0.75
+        }
+    });
+
+
+
+    // -----------------------------------------------------
+    // V14 · CLASIFICACIÓN ZCU AREC · PROVISIONAL
+    // -----------------------------------------------------
+
+    map.addSource('v14-zcu-arec', {
+        type: 'geojson',
+        data: zcuCalculadaArec
+    });
+
+    map.addLayer({
+        id: 'v14-zcu-arec-fill',
+        type: 'fill',
+        source: 'v14-zcu-arec',
+
+        layout: {
+            visibility: 'none'
+        },
+
+        paint: {
+
+            'fill-color': [
+                'match',
+                ['get', 'CLASE_ZCU_AREC_V14'],
+
+                'Z1_CONSOLIDADA',
+                '#1b7837',
+
+                'Z2_SEMICON',
+                '#5aae61',
+
+                'Z3_EN_PROCESO',
+                '#fdae61',
+
+                'Z4_EVALUACION_CON_EMPLEO',
+                '#2b83ba',
+
+                'Z6_POTENCIAL_ECONOMICO',
+                '#762a83',
+
+                'Z7_SIN_CLASIFICAR',
+                '#bdbdbd',
+
+                '#969696'
+            ],
+
+            'fill-opacity': 0.68
+        }
+    });
+
+    map.addLayer({
+        id: 'v14-zcu-arec-line',
+        type: 'line',
+        source: 'v14-zcu-arec',
+
+        layout: {
+            visibility: 'none'
+        },
+
+        paint: {
+            'line-color': '#444444',
+            'line-width': 0.55,
+            'line-opacity': 0.75
+        }
+    });
+
+
+    // GRID
+    map.addSource('grid', {
+        type: 'geojson',
+        data: grid
+    });
+
+    map.addLayer({
+        id: 'grid-fill',
+        type: 'fill',
+        source: 'grid',
+        paint: {
+            'fill-color': '#ffffff',
+            'fill-opacity': 0.01
+        }
+    });
+
+    map.addLayer({
+        id: 'grid-line',
+        type: 'line',
+        source: 'grid',
+        paint: {
+            'line-color': '#111',
+            'line-width': 0.7,
+            'line-opacity': 0.60
+        }
+    });
+
+    map.fitBounds(
+        bounds,
+        {
+            padding: 35
+        }
+    );
+
+    // CLICK EN CELDA
+    map.on(
+        'click',
+        'grid-fill',
+        e => {
+
+            if (!e.features.length) return;
+
+            const p = e.features[0].properties;
+
+            new maplibregl.Popup()
+                .setLngLat(e.lngLat)
+                .setHTML(`
+                    <b>${p.cell_id}</b>
+                    <hr>
+                    Área: ${p.area_ha} ha
+                    <br><br>
+                    Centroide:
+                    ${Number(p.centroide_lat).toFixed(5)},
+                    ${Number(p.centroide_lon).toFixed(5)}
+                `)
+                .addTo(map);
+
+        }
+    );
+
+    // CLICK EN DENSIDAD DE VIVIENDA
+    map.on(
+        'click',
+        'v14-densidad-vivienda-fill',
+        e => {
+
+            if (!e.features.length) return;
+
+            const p = e.features[0].properties;
+
+            const agua =
+                p.AGUA_PCT === null ||
+                p.AGUA_PCT === undefined
+                ? 's/d'
+                : Number(p.AGUA_PCT).toFixed(1) + '%';
+
+            const drenaje =
+                p.DRENAJE_PCT === null ||
+                p.DRENAJE_PCT === undefined
+                ? 's/d'
+                : Number(p.DRENAJE_PCT).toFixed(1) + '%';
+
+            new maplibregl.Popup()
+                .setLngLat(e.lngLat)
+                .setHTML(`
+                    <b>V14 · Densidad de vivienda</b>
+                    <hr>
+
+                    AGEB:
+                    <b>${p.CVEGEO}</b>
+
+                    <br><br>
+
+                    Viviendas:
+                    <b>${Number(p.VIVTOT_NUM).toLocaleString()}</b>
+
+                    <br>
+
+                    Densidad:
+                    <b>${Number(p.DENS_VIV_HA).toFixed(2)} viv/ha</b>
+
+                    <br><br>
+
+                    Agua:
+                    ${agua}
+
+                    <br>
+
+                    Drenaje:
+                    ${drenaje}
+
+                    <br><br>
+
+                    <span style="font-size:11px;color:#666;">
+                    Fuente: INEGI Censo 2020 +
+                    Marco Geoestadístico 2020
+                    </span>
+                `)
+                .addTo(map);
+
+        }
+    );
+
+    // CLICK EN DENSIDAD DE EMPLEO
+
+    map.on(
+        'click',
+        'v14-densidad-empleo-fill',
+        e => {
+
+            if (!e.features.length) return;
+
+            const p = e.features[0].properties;
+
+            new maplibregl.Popup()
+                .setLngLat(e.lngLat)
+                .setHTML(`
+                    <b>V14 · Densidad de empleo</b>
+                    <hr>
+
+                    AGEB:
+                    <b>${p.CVEGEO}</b>
+
+                    <br><br>
+
+                    Establecimientos:
+                    <b>${Number(
+                        p.ESTABLECIMIENTOS
+                    ).toLocaleString()}</b>
+
+                    <br>
+
+                    Empleo estimado:
+                    <b>${Number(
+                        p.EMPLEO_EST_TOTAL
+                    ).toLocaleString()}</b>
+
+                    <br>
+
+                    Densidad:
+                    <b>${Number(
+                        p.DENS_EMPLEO_HA
+                    ).toFixed(2)} empleos/ha</b>
+
+                    <br><br>
+
+                    Establecimientos 251+:
+                    <b>${Number(
+                        p.ESTABLECIMIENTOS_251_MAS
+                    ).toLocaleString()}</b>
+
+                    <br><br>
+
+                    <span style="
+                        font-size:11px;
+                        color:#666;
+                    ">
+                    Fuente: INEGI DENUE +
+                    Marco Geoestadístico 2020
+                    <br>
+                    Empleo estimado por rango;
+                    251+ = 300 provisional.
+                    </span>
+                `)
+                .addTo(map);
+
+        }
+    );
+
+    // CLICK EN AGUA Y DRENAJE
+
+    map.on(
+        'click',
+        'v14-agua-drenaje-fill',
+        e => {
+
+            if (!e.features.length) return;
+
+            const p = e.features[0].properties;
+
+            const agua =
+                p.AGUA_PCT === null ||
+                p.AGUA_PCT === undefined
+                ? 's/d'
+                : Number(p.AGUA_PCT).toFixed(1) + '%';
+
+            const drenaje =
+                p.DRENAJE_PCT === null ||
+                p.DRENAJE_PCT === undefined
+                ? 's/d'
+                : Number(p.DRENAJE_PCT).toFixed(1) + '%';
+
+            const proxy =
+                Number(
+                    p.AGUA_Y_DRENAJE_GT75_PROXY
+                ) === 1
+                ? 'Sí'
+                : 'No';
+
+            new maplibregl.Popup()
+                .setLngLat(e.lngLat)
+                .setHTML(`
+                    <b>V14 · Agua y drenaje</b>
+                    <hr>
+
+                    AGEB:
+                    <b>${p.CVEGEO}</b>
+
+                    <br><br>
+
+                    Viviendas particulares habitadas:
+                    <b>${p.VIVPAR_HAB_NUM ?? 's/d'}</b>
+
+                    <br><br>
+
+                    Agua:
+                    <b>${agua}</b>
+
+                    <br>
+
+                    Drenaje:
+                    <b>${drenaje}</b>
+
+                    <br><br>
+
+                    Ambos indicadores >75%:
+                    <b>${proxy}</b>
+
+                    <br><br>
+
+                    <span style="
+                        font-size:11px;
+                        color:#666;
+                    ">
+                    Fuente: INEGI Censo 2020.
+                    <br>
+                    La condición agua+drenaje es un proxy:
+                    no representa la intersección exacta
+                    de viviendas con ambos servicios.
+                    </span>
+                `)
+                .addTo(map);
+
+        }
+    );
+
+});
+
+
+// ---------------------------------------------------------
+// BASE TERRITORIAL CHECKBOXES
+// ---------------------------------------------------------
+
+function toggle(ids, estado) {
+
+    ids.forEach(id => {
+
+        if (map.getLayer(id)) {
+
+            map.setLayoutProperty(
+                id,
+                'visibility',
+                estado ? 'visible' : 'none'
+            );
+
+        }
+
+    });
+
+}
+
+document
+.getElementById('toggle-localidad')
+.addEventListener('change', e => {
+    toggle(
+        ['localidad-line'],
+        e.target.checked
+    );
+});
+
+document
+.getElementById('toggle-ageb')
+.addEventListener('change', e => {
+    toggle(
+        ['ageb-line'],
+        e.target.checked
+    );
+});
+
+document
+.getElementById('toggle-grid')
+.addEventListener('change', e => {
+    toggle(
+        ['grid-fill', 'grid-line'],
+        e.target.checked
+    );
+});
+
+
+// ---------------------------------------------------------
+// ÁRBOL REAL DESDE variables.json
+// ---------------------------------------------------------
+
+const contenedor =
+document.getElementById('variables');
+
+
+catalogo.variables.forEach(variable => {
+
+    const wrapper =
+    document.createElement('div');
+
+    wrapper.className =
+    'variable';
+
+
+    const header =
+    document.createElement('div');
+
+    header.className =
+    'variable-header';
+
+
+    const arrow =
+    document.createElement('span');
+
+    arrow.className =
+    'arrow';
+
+    arrow.textContent =
+    '▶';
+
+
+    const code =
+    document.createElement('span');
+
+    code.className =
+    'variable-code';
+
+    code.textContent =
+    `V${String(variable.id).padStart(2, '0')}`;
+
+
+    const nombre =
+    document.createElement('span');
+
+    nombre.textContent =
+    variable.nombre;
+
+
+    header.appendChild(arrow);
+    header.appendChild(code);
+    header.appendChild(nombre);
+
+
+    const subcapas =
+    document.createElement('div');
+
+    subcapas.className =
+    'subcapas';
+
+
+    variable.subcapas.forEach(sub => {
+
+        const fila =
+        document.createElement('div');
+
+        fila.className =
+        'subcapa';
+
+
+        const check =
+        document.createElement('input');
+
+        check.type =
+        'checkbox';
+
+        const esDensidadVivienda =
+        sub.id === 'densidad_vivienda_ageb';
+
+        const esDensidadEmpleo =
+        sub.id === 'densidad_empleo_ageb';
+
+        const esAguaDrenaje =
+        sub.id === 'agua_drenaje_ageb';
+
+        const esZcuCalculada =
+        sub.id === 'zcu_calculada_arec';
+
+        check.disabled =
+        !(
+            esDensidadVivienda ||
+            esDensidadEmpleo ||
+            esAguaDrenaje ||
+            esZcuCalculada
+        );
+
+        if (esDensidadVivienda) {
+
+            check.addEventListener(
+                'change',
+                e => {
+
+                    toggle(
+                        [
+                            'v14-densidad-vivienda-fill',
+                            'v14-densidad-vivienda-line'
+                        ],
+                        e.target.checked
+                    );
+
+                }
+            );
+
+        }
+
+        if (esDensidadEmpleo) {
+
+            check.addEventListener(
+                'change',
+                e => {
+
+                    toggle(
+                        [
+                            'v14-densidad-empleo-fill',
+                            'v14-densidad-empleo-line'
+                        ],
+                        e.target.checked
+                    );
+
+                }
+            );
+
+        }
+
+        if (esAguaDrenaje) {
+
+            check.addEventListener(
+                'change',
+                e => {
+
+                    toggle(
+                        [
+                            'v14-agua-drenaje-fill',
+                            'v14-agua-drenaje-line'
+                        ],
+                        e.target.checked
+                    );
+
+                    document
+                    .getElementById(
+                        'legend-agua-drenaje'
+                    )
+                    .style.display =
+                    e.target.checked
+                    ? 'block'
+                    : 'none';
+
+                }
+            );
+
+        }
+
+
+
+        if (esZcuCalculada) {
+
+            check.addEventListener(
+                'change',
+                e => {
+
+                    toggle(
+                        [
+                            'v14-zcu-arec-fill',
+                            'v14-zcu-arec-line'
+                        ],
+                        e.target.checked
+                    );
+
+                    document
+                    .getElementById(
+                        'legend-zcu-arec'
+                    )
+                    .style.display =
+                    e.target.checked
+                    ? 'block'
+                    : 'none';
+
+                }
+            );
+
+        }
+
+
+        const texto =
+        document.createElement('span');
+
+        texto.textContent =
+        sub.nombre;
+
+
+        const estado =
+        document.createElement('span');
+
+        estado.className =
+        'status';
+
+
+        if (
+            sub.id ===
+            'densidad_vivienda_ageb' ||
+            sub.id ===
+            'densidad_empleo_ageb' ||
+            sub.id ===
+            'agua_drenaje_ageb' ||
+            sub.id ===
+            'zcu_calculada_arec'
+        ) {
+
+            estado.textContent =
+            'ACTIVA';
+
+            estado.classList.add(
+                'status-activa'
+            );
+
+        }
+
+        else if (
+            sub.estado ===
+            'bloqueada_interna_mvp'
+        ) {
+
+            estado.textContent =
+            'INTERNA';
+
+            estado.classList.add(
+                'status-interna'
+            );
+
+        }
+
+        else if (
+            sub.estado ===
+            'pendiente_carga_manual'
+        ) {
+
+            estado.textContent =
+            'MANUAL';
+
+            estado.classList.add(
+                'status-manual'
+            );
+
+        }
+
+        else {
+
+            estado.textContent =
+            'PENDIENTE';
+
+            estado.classList.add(
+                'status-publica'
+            );
+
+        }
+
+
+        fila.appendChild(check);
+        fila.appendChild(texto);
+        fila.appendChild(estado);
+
+        subcapas.appendChild(fila);
+
+    });
+
+
+    header.addEventListener(
+        'click',
+        () => {
+
+            const abierto =
+            subcapas.style.display === 'block';
+
+            subcapas.style.display =
+            abierto
+            ? 'none'
+            : 'block';
+
+            arrow.textContent =
+            abierto
+            ? '▶'
+            : '▼';
+
+        }
+    );
+
+
+    wrapper.appendChild(header);
+    wrapper.appendChild(subcapas);
+
+    contenedor.appendChild(wrapper);
+
+});
+
+
+
+// =========================================================
+// AREC GEO V11
+// MULTIPLAZA V14 · CARGA PARCIAL SEGURA
+// =========================================================
+
+const PLAZAS_MULTI = {"JRZ": {"nombre": "Ciudad Juárez", "ent": "08", "mun": "037", "loc": "0001", "estado": "Chihuahua"}, "CHH": {"nombre": "Chihuahua", "ent": "08", "mun": "019", "loc": "0001", "estado": "Chihuahua"}, "DEL": {"nombre": "Delicias", "ent": "08", "mun": "021", "loc": "0001", "estado": "Chihuahua"}, "SLT": {"nombre": "Saltillo", "ent": "05", "mun": "030", "loc": "0001", "estado": "Coahuila de Zaragoza"}, "TOR": {"nombre": "Torreón", "ent": "05", "mun": "035", "loc": "0001", "estado": "Coahuila de Zaragoza"}, "MTY": {"nombre": "Monterrey", "ent": "19", "mun": "039", "loc": "0001", "estado": "Nuevo León"}, "HMO": {"nombre": "Hermosillo", "ent": "26", "mun": "030", "loc": "0001", "estado": "Sonora"}, "OBR": {"nombre": "Ciudad Obregón", "ent": "26", "mun": "018", "loc": "0001", "estado": "Sonora"}, "MXL": {"nombre": "Mexicali", "ent": "02", "mun": "002", "loc": "0001", "estado": "Baja California"}, "TIJ": {"nombre": "Tijuana", "ent": "02", "mun": "004", "loc": "0001", "estado": "Baja California"}, "GDL": {"nombre": "Guadalajara", "ent": "14", "mun": "039", "loc": "0001", "estado": "Jalisco"}, "QRO": {"nombre": "Santiago de Querétaro", "ent": "22", "mun": "014", "loc": "0001", "estado": "Querétaro"}, "VER": {"nombre": "Veracruz", "ent": "30", "mun": "193", "loc": "0001", "estado": "Veracruz"}, "LEO": {"nombre": "León de los Aldama", "ent": "11", "mun": "020", "loc": "0001", "estado": "Guanajuato"}, "PUE": {"nombre": "Heroica Puebla de Zaragoza", "ent": "21", "mun": "114", "loc": "0001", "estado": "Puebla"}, "TOL": {"nombre": "Toluca de Lerdo", "ent": "15", "mun": "106", "loc": "0001", "estado": "México"}, "CAN": {"nombre": "Cancún", "ent": "23", "mun": "005", "loc": "0001", "estado": "Quintana Roo"}, "SLP": {"nombre": "San Luis Potosí", "ent": "24", "mun": "028", "loc": "0001", "estado": "San Luis Potosí"}, "AGS": {"nombre": "Aguascalientes", "ent": "01", "mun": "001", "loc": "0001", "estado": "Aguascalientes"}};
+
+
+// ---------------------------------------------------------
+// FeatureCollection vacía
+// ---------------------------------------------------------
+
+function fcVacio() {
+
+    return {
+        type: 'FeatureCollection',
+        features: []
+    };
+
+}
+
+
+// ---------------------------------------------------------
+// Actualizar source MapLibre
+// ---------------------------------------------------------
+
+function setSourceData(
+    id,
+    data
+) {
+
+    const source =
+        map.getSource(id);
+
+    if (source) {
+
+        source.setData(
+            data || fcVacio()
+        );
+
+    }
+
+}
+
+
+// ---------------------------------------------------------
+// LIMPIAR COMPLETAMENTE LA PLAZA ANTERIOR
+// ---------------------------------------------------------
+
+function limpiarPlazaAnterior() {
+
+    [
+        'localidad',
+        'ageb',
+        'grid',
+        'v14-densidad-vivienda',
+        'v14-densidad-empleo',
+        'v14-agua-drenaje',
+        'v14-zcu-arec'
+    ]
+    .forEach(
+        id => {
+
+            setSourceData(
+                id,
+                fcVacio()
+            );
+
+        }
+    );
+
+
+    // Desmarcar checks de subcapas
+
+    document
+    .querySelectorAll(
+        '.subcapa input[type=checkbox]'
+    )
+    .forEach(
+        checkbox => {
+
+            checkbox.checked = false;
+
+        }
+    );
+
+
+    // Ocultar leyendas
+
+    const leyendaAgua =
+        document.getElementById(
+            'legend-agua-drenaje'
+        );
+
+    if (leyendaAgua) {
+
+        leyendaAgua.style.display =
+            'none';
+
+    }
+
+
+    const leyendaZcu =
+        document.getElementById(
+            'legend-zcu-arec'
+        );
+
+    if (leyendaZcu) {
+
+        leyendaZcu.style.display =
+            'none';
+
+    }
+
+}
+
+
+// ---------------------------------------------------------
+// Cargar GeoJSON
+// ---------------------------------------------------------
+
+async function getGeoJSON(
+    url
+) {
+
+    const response =
+        await fetch(
+            url,
+            {
+                cache: 'no-store'
+            }
+        );
+
+    if (!response.ok) {
+
+        throw new Error(
+            `${response.status} · ${url}`
+        );
+
+    }
+
+    return await response.json();
+
+}
+
+
+// ---------------------------------------------------------
+// Obtener bounds de GeoJSON
+// ---------------------------------------------------------
+
+function recorrerCoords(
+    coords,
+    acc
+) {
+
+    if (!Array.isArray(coords)) {
+        return;
+    }
+
+
+    if (
+        coords.length >= 2
+        &&
+        typeof coords[0]
+            === 'number'
+        &&
+        typeof coords[1]
+            === 'number'
+    ) {
+
+        acc.minx =
+            Math.min(
+                acc.minx,
+                coords[0]
+            );
+
+        acc.maxx =
+            Math.max(
+                acc.maxx,
+                coords[0]
+            );
+
+        acc.miny =
+            Math.min(
+                acc.miny,
+                coords[1]
+            );
+
+        acc.maxy =
+            Math.max(
+                acc.maxy,
+                coords[1]
+            );
+
+        return;
+
+    }
+
+
+    coords.forEach(
+        item => {
+
+            recorrerCoords(
+                item,
+                acc
+            );
+
+        }
+    );
+
+}
+
+
+function boundsFC(
+    fc
+) {
+
+    const bounds = {
+
+        minx: Infinity,
+        miny: Infinity,
+
+        maxx: -Infinity,
+        maxy: -Infinity
+
+    };
+
+
+    (
+        fc?.features
+        || []
+    )
+    .forEach(
+        feature => {
+
+            if (
+                feature.geometry
+                &&
+                feature.geometry.coordinates
+            ) {
+
+                recorrerCoords(
+                    feature.geometry.coordinates,
+                    bounds
+                );
+
+            }
+
+        }
+    );
+
+
+    if (
+        !isFinite(
+            bounds.minx
+        )
+    ) {
+
+        return null;
+
+    }
+
+
+    return [
+
+        [
+            bounds.minx,
+            bounds.miny
+        ],
+
+        [
+            bounds.maxx,
+            bounds.maxy
+        ]
+
+    ];
+
+}
+
+
+// ---------------------------------------------------------
+// CARGAR PLAZA
+// ---------------------------------------------------------
+
+async function cargarPlazaV14(
+    codigo
+) {
+
+    // MUY IMPORTANTE:
+    // borrar la ciudad anterior ANTES
+    // de intentar cargar la nueva.
+
+    limpiarPlazaAnterior();
+
+
+    const codigoMinuscula =
+        codigo.toLowerCase();
+
+
+    const base =
+        `../data/${codigo}`;
+
+
+    const status =
+        document.getElementById(
+            'plaza-carga-status'
+        );
+
+
+    status.textContent =
+        `Cargando ${codigo}…`;
+
+
+    status.style.color =
+        '#666';
+
+
+    // -----------------------------------------------------
+    // Archivos requeridos
+    // -----------------------------------------------------
+
+    const capas = {
+
+        localidad: {
+
+            source:
+                'localidad',
+
+            url:
+                `${base}/evidence/base/`
+                + `localidad_${codigoMinuscula}.geojson`
+
+        },
+
+
+        ageb: {
+
+            source:
+                'ageb',
+
+            url:
+                `${base}/evidence/base/`
+                + `ageb_urbanas_${codigoMinuscula}.geojson`
+
+        },
+
+
+        grid: {
+
+            source:
+                'grid',
+
+            url:
+                `${base}/evidence/base/`
+                + `grid_${codigoMinuscula}_500m_provisional.geojson`
+
+        },
+
+
+        densidad_vivienda: {
+
+            source:
+                'v14-densidad-vivienda',
+
+            url:
+                `${base}/evidence/V14/`
+                + `densidad_vivienda_ageb_${codigoMinuscula}.geojson`
+
+        },
+
+
+        densidad_empleo: {
+
+            source:
+                'v14-densidad-empleo',
+
+            url:
+                `${base}/evidence/V14/`
+                + `densidad_empleo_ageb_${codigoMinuscula}.geojson`
+
+        },
+
+
+        agua_drenaje: {
+
+            source:
+                'v14-agua-drenaje',
+
+            url:
+                `${base}/evidence/V14/`
+                + `agua_drenaje_ageb_${codigoMinuscula}_v02.geojson`
+
+        },
+
+
+        zcu_arec: {
+
+            source:
+                'v14-zcu-arec',
+
+            url:
+                `${base}/evidence/V14/`
+                + `zcu_arec_v14_${codigoMinuscula}.geojson`
+
+        }
+
+    };
+
+
+    const keys =
+        Object.keys(
+            capas
+        );
+
+
+    // -----------------------------------------------------
+    // IMPORTANTE:
+    // Promise.allSettled
+    //
+    // Si una capa falla NO aborta toda la ciudad.
+    // -----------------------------------------------------
+
+    const resultados =
+        await Promise.allSettled(
+
+            keys.map(
+                key => {
+
+                    return getGeoJSON(
+                        capas[key].url
+                    );
+
+                }
+            )
+
+        );
+
+
+    const loaded =
+        {};
+
+
+    const faltan =
+        [];
+
+
+    resultados.forEach(
+        (
+            resultado,
+            index
+        ) => {
+
+            const key =
+                keys[index];
+
+
+            if (
+                resultado.status
+                === 'fulfilled'
+            ) {
+
+                loaded[key] =
+                    resultado.value;
+
+
+                setSourceData(
+                    capas[key].source,
+                    resultado.value
+                );
+
+            }
+
+            else {
+
+                faltan.push(
+                    key
+                );
+
+
+                setSourceData(
+                    capas[key].source,
+                    fcVacio()
+                );
+
+            }
+
+        }
+    );
+
+
+    // -----------------------------------------------------
+    // Zoom a la plaza real
+    // -----------------------------------------------------
+
+    const bounds =
+        boundsFC(
+            loaded.localidad
+        )
+        ||
+        boundsFC(
+            loaded.grid
+        );
+
+
+    if (bounds) {
+
+        map.fitBounds(
+            bounds,
+            {
+
+                padding: 35,
+
+                duration: 700
+
+            }
+        );
+
+    }
+
+
+    // -----------------------------------------------------
+    // Estado
+    // -----------------------------------------------------
+
+    const ok =
+        keys.length
+        -
+        faltan.length;
+
+
+    status.textContent =
+        `${codigo}: `
+        + `${ok}/${keys.length} `
+        + 'capas V14 cargadas'
+        + (
+            faltan.length
+
+            ?
+
+            ` · faltan: ${
+                faltan.join(', ')
+            }`
+
+            :
+
+            ' · COMPLETA'
+        );
+
+
+    status.style.color =
+        faltan.length
+
+        ?
+
+        '#996000'
+
+        :
+
+        '#08752f';
+
+}
+
+
+// ---------------------------------------------------------
+// Inicializar selector
+// ---------------------------------------------------------
+
+function iniciarMulti() {
+
+    const selector =
+        document.getElementById(
+            'plaza-selector'
+        );
+
+
+    selector.addEventListener(
+        'change',
+        event => {
+
+            cargarPlazaV14(
+                event.target.value
+            );
+
+        }
+    );
+
+
+    selector.value =
+        'JRZ';
+
+
+    cargarPlazaV14(
+        'JRZ'
+    );
+
+}
+
+
+// ---------------------------------------------------------
+// Esperar a que MapLibre termine de cargar
+// ---------------------------------------------------------
+
+if (
+    map.loaded()
+) {
+
+    iniciarMulti();
+
+}
+
+else {
+
+    map.on(
+        'load',
+        () => {
+
+            setTimeout(
+                iniciarMulti,
+                0
+            );
+
+        }
+    );
+
+}
+
+
+
+(function () {
+
+    const selector =
+        document.getElementById(
+            'plaza-selector'
+        );
+
+    const slot =
+        document.getElementById(
+            'ag-selector-slot'
+        );
+
+    if (
+        selector
+        &&
+        slot
+    ) {
+
+        const oldContainer =
+            selector.parentElement;
+
+        slot.appendChild(
+            selector
+        );
+
+        if (
+            oldContainer
+        ) {
+
+            oldContainer.classList.add(
+                'ag-old-plaza-block'
+            );
+
+        }
+
+    }
+
+
+    const logBox =
+        document.getElementById(
+            'ag-log'
+        );
+
+
+    function uiLog(
+        msg
+    ) {
+
+        if (
+            !logBox
+        ) {
+            return;
+        }
+
+        const t =
+            new Date()
+            .toLocaleTimeString();
+
+        logBox.textContent =
+            `[${t}] ${msg}\n`
+            +
+            logBox.textContent;
+
+    }
+
+
+    const layerSearch =
+        document.getElementById(
+            'ag-layer-search'
+        );
+
+
+    if (
+        layerSearch
+    ) {
+
+        layerSearch.addEventListener(
+            'input',
+            e => {
+
+                const q =
+                    e.target.value
+                    .trim()
+                    .toLowerCase();
+
+                document
+                .querySelectorAll(
+                    '.variable'
+                )
+                .forEach(
+                    v => {
+
+                        v.style.display =
+                            (
+                                !q
+                                ||
+                                v.textContent
+                                .toLowerCase()
+                                .includes(q)
+                            )
+                            ?
+                            ''
+                            :
+                            'none';
+
+                    }
+                );
+
+            }
+        );
+
+    }
+
+
+    const mundo =
+        document.getElementById(
+            'ag-mundo-btn'
+        );
+
+
+    if (
+        mundo
+    ) {
+
+        mundo.onclick =
+        () => {
+
+            map.flyTo({
+
+                center:
+                    [
+                        0,
+                        20
+                    ],
+
+                zoom:
+                    2,
+
+                essential:
+                    true
+
+            });
+
+            uiLog(
+                'Vista mundial'
+            );
+
+        };
+
+    }
+
+
+    const plazas =
+        document.getElementById(
+            'ag-plazas-btn'
+        );
+
+
+    if (
+        plazas
+    ) {
+
+        plazas.onclick =
+        () => {
+
+            map.flyTo({
+
+                center:
+                    [
+                        -102.5,
+                        23.7
+                    ],
+
+                zoom:
+                    4.1,
+
+                essential:
+                    true
+
+            });
+
+            uiLog(
+                'Vista nacional'
+            );
+
+        };
+
+    }
+
+
+    const inspector =
+        document.getElementById(
+            'ag-inspector-btn'
+        );
+
+
+    if (
+        inspector
+    ) {
+
+        inspector.onclick =
+        () => {
+
+            document.body
+            .classList
+            .toggle(
+                'ag-hide-inspector'
+            );
+
+            setTimeout(
+                () => {
+                    map.resize();
+                },
+                150
+            );
+
+        };
+
+    }
+
+
+    const procesar =
+        document.getElementById(
+            'ag-procesar-btn'
+        );
+
+
+    if (
+        procesar
+    ) {
+
+        procesar.onclick =
+        () => {
+
+            alert(
+                'Esta versión solo cambia el formato visual. '
+                +
+                'El motor cartográfico V11 permanece intacto.'
+            );
+
+        };
+
+    }
+
+
+    const gridBtn =
+        document.getElementById(
+            'ag-grid-btn'
+        );
+
+
+    if (
+        gridBtn
+    ) {
+
+        gridBtn.onclick =
+        () => {
+
+            const cb =
+                document.getElementById(
+                    'toggle-grid'
+                );
+
+            if (
+                cb
+            ) {
+                cb.click();
+            }
+
+        };
+
+    }
+
+
+    async function buscarLugar() {
+
+        const input =
+            document.getElementById(
+                'ag-world-search'
+            );
+
+        const q =
+            input
+            ?
+            input.value.trim()
+            :
+            '';
+
+        if (
+            !q
+        ) {
+            return;
+        }
+
+        try {
+
+            const r =
+                await fetch(
+                    'https://photon.komoot.io/api/?limit=1&q='
+                    +
+                    encodeURIComponent(q)
+                );
+
+            const j =
+                await r.json();
+
+            const f =
+                j.features
+                &&
+                j.features[0];
+
+            if (
+                !f
+            ) {
+                throw new Error(
+                    'Sin resultados'
+                );
+            }
+
+            const [
+                lon,
+                lat
+            ] =
+            f.geometry.coordinates;
+
+            map.flyTo({
+
+                center:
+                    [
+                        lon,
+                        lat
+                    ],
+
+                zoom:
+                    11,
+
+                essential:
+                    true
+
+            });
+
+            uiLog(
+                'Búsqueda mundial: '
+                +
+                q
+            );
+
+        }
+
+        catch (
+            e
+        ) {
+
+            alert(
+                'No pude localizar ese lugar.'
+            );
+
+        }
+
+    }
+
+
+    const searchButton =
+        document.getElementById(
+            'ag-search-btn'
+        );
+
+
+    if (
+        searchButton
+    ) {
+        searchButton.onclick =
+            buscarLugar;
+    }
+
+
+    const searchInput =
+        document.getElementById(
+            'ag-world-search'
+        );
+
+
+    if (
+        searchInput
+    ) {
+
+        searchInput.addEventListener(
+            'keydown',
+            e => {
+
+                if (
+                    e.key
+                    ===
+                    'Enter'
+                ) {
+                    buscarLugar();
+                }
+
+            }
+        );
+
+    }
+
+
+    if (
+        selector
+    ) {
+
+        selector.addEventListener(
+            'change',
+            () => {
+
+                const st =
+                    document.getElementById(
+                        'ag-inspector-status'
+                    );
+
+                if (
+                    st
+                ) {
+
+                    st.textContent =
+                        selector
+                        .options[
+                            selector.selectedIndex
+                        ]
+                        ?.textContent
+                        ||
+                        selector.value;
+
+                }
+
+                uiLog(
+                    'Plaza seleccionada: '
+                    +
+                    selector.value
+                );
+
+            }
+        );
+
+    }
+
+
+    uiLog(
+        'Dashboard aplicado sobre V11 sin tocar simbología'
+    );
+
+})();
+
+
+// =========================================================
+// AREC GEO V13 · CAPAS PRE-MACROS
+// NO MODIFICA V14 EXISTENTE
+// =========================================================
+const PREMACRO_REGISTRY = {"empleo_industrial_denue": "../data/{CODE}/evidence/V02/empleo_industrial_denue_{code}.geojson", "parques_industriales": "../data/{CODE}/evidence/V02/parques_industriales_osm_{code}.geojson", "oferta_vivienda_registrada": "../data/{CODE}/evidence/V03/oferta_vivienda_registrada_resumen_{code}.geojson", "equipamientos_existentes": "../data/{CODE}/evidence/V04/equipamientos_existentes_{code}.geojson", "anp_conanp": "../data/{CODE}/evidence/V06/anp_conanp_{code}.geojson", "cuerpos_agua": "../data/{CODE}/evidence/V06/cuerpos_agua_osm_{code}.geojson", "vedas_hidricas": "../data/{CODE}/evidence/V06/vedas_hidricas_{code}.geojson", "vias_primarias": "../data/{CODE}/evidence/V07/vias_primarias_{code}.geojson", "red_vial_osm": "../data/{CODE}/evidence/V07/red_vial_osm_{code}.geojson", "industria_denue": "../data/{CODE}/evidence/V08/industria_denue_{code}.geojson", "zonas_industriales": "../data/{CODE}/evidence/V08/zonas_industriales_osm_{code}.geojson", "comercios_denue": "../data/{CODE}/evidence/V09/comercios_denue_{code}.geojson", "abasto_mercados": "../data/{CODE}/evidence/V09/abasto_mercados_{code}.geojson", "centros_comerciales": "../data/{CODE}/evidence/V09/centros_comerciales_{code}.geojson", "hospitales": "../data/{CODE}/evidence/V10/hospitales_{code}.geojson", "clinicas_centros_salud": "../data/{CODE}/evidence/V10/clinicas_centros_salud_{code}.geojson", "universidades": "../data/{CODE}/evidence/V11/universidades_{code}.geojson", "primarias": "../data/{CODE}/evidence/V12/primarias_{code}.geojson", "secundarias": "../data/{CODE}/evidence/V12/secundarias_{code}.geojson", "preescolar": "../data/{CODE}/evidence/V12/preescolar_{code}.geojson", "media_superior": "../data/{CODE}/evidence/V12/media_superior_{code}.geojson", "huella_2015": "../data/{CODE}/evidence/V13/huella_2015_{code}.geojson", "huella_2025": "../data/{CODE}/evidence/V13/huella_2025_{code}.geojson", "expansion_2015_2025": "../data/{CODE}/evidence/V13/expansion_2015_2025_{code}.geojson", "expansion_mayor_2ha": "../data/{CODE}/evidence/V13/expansion_mayor_2ha_{code}.geojson", "agua_acuiferos": "../data/{CODE}/evidence/V19/agua_acuiferos_{code}.geojson", "agua_pozos_piezometria": "../data/{CODE}/evidence/V19/agua_pozos_piezometria_{code}.geojson", "drenaje_cobertura": "../data/{CODE}/evidence/V19/drenaje_cobertura_{code}.geojson", "electricidad_lineas": "../data/{CODE}/evidence/V19/electricidad_lineas_{code}.geojson", "electricidad_subestaciones": "../data/{CODE}/evidence/V19/electricidad_subestaciones_{code}.geojson", "vegetacion_ndvi": "../data/{CODE}/evidence/V20/vegetacion_ndvi_{code}.geojson", "islas_calor": "../data/{CODE}/evidence/V20/islas_calor_{code}.geojson", "contexto_social": "../data/{CODE}/evidence/V20/contexto_social_{code}.geojson", "proveedurias": "../data/{CODE}/evidence/V21/proveedurias_potenciales_denue_{code}.geojson", "viviendas_censo_ageb": "../data/{CODE}/evidence/V22/viviendas_censo_ageb_{code}.geojson", "viviendas_deshabitadas": "../data/{CODE}/evidence/V22/viviendas_deshabitadas_{code}.geojson", "residencial_existente": "../data/{CODE}/evidence/V22/residencial_existente_osm_{code}.geojson", "rezago_social": "../data/{CODE}/evidence/V22/rezago_social_{code}.geojson", "tierras_ruba": "../data/{CODE}/evidence/V15/tierras_ruba_{code}.geojson", "desarrollos_ruba": "../data/{CODE}/evidence/V16/desarrollos_ruba_{code}.geojson", "banco_tierras": "../data/{CODE}/evidence/V17/banco_tierras_{code}.geojson", "rec_vigente": "../data/{CODE}/evidence/V18/rec_vigente_{code}.geojson"};
+
+function pmPath(id, code){
+  const t=PREMACRO_REGISTRY[id];
+  if(!t) return null;
+  return t.replaceAll('{CODE}',code).replaceAll('{code}',code.toLowerCase());
+}
+
+function pmIds(id){
+  return {
+    source:'pm-src-'+id,
+    fill:'pm-fill-'+id,
+    line:'pm-line-'+id,
+    circle:'pm-circle-'+id
+  };
+}
+
+function pmColor(id){
+  const mapc={
+    empleo_industrial_denue:'#555555',
+    industria_denue:'#555555',
+    parques_industriales:'#78634b',
+    zonas_industriales:'#78634b',
+    comercios_denue:'#d88900',
+    abasto_mercados:'#b56a00',
+    centros_comerciales:'#f2a900',
+    hospitales:'#c92828',
+    clinicas_centros_salud:'#ee6666',
+    universidades:'#6a3d9a',
+    primarias:'#188f68',secundarias:'#0f7558',preescolar:'#4dbb93',media_superior:'#2f6f9f',
+    anp_conanp:'#2f8f4e',cuerpos_agua:'#3f8ed6',vedas_hidricas:'#7161a8',
+    vias_primarias:'#de7b20',red_vial_osm:'#d69955',
+    electricidad_lineas:'#d9a800',electricidad_subestaciones:'#c38b00',
+    vegetacion_ndvi:'#4b9b4b',islas_calor:'#d23a2e',contexto_social:'#7c6ba8',
+    proveedurias:'#116e8a',
+    viviendas_censo_ageb:'#568cc4',viviendas_deshabitadas:'#a76e68',
+    residencial_existente:'#7d94a6',rezago_social:'#8b5575',
+    expansion_2015_2025:'#1f78b4',expansion_mayor_2ha:'#004a7c',
+    huella_2015:'#a6bddb',huella_2025:'#3690c0',
+    tierras_ruba:'#222222',desarrollos_ruba:'#0a5b9e',banco_tierras:'#a05a00',rec_vigente:'#8b0a50'
+  };
+  return mapc[id] || '#2279a5';
+}
+
+async function pmLoad(id, code, checked){
+  const ids=pmIds(id);
+
+  if(!checked){
+    [ids.fill,ids.line,ids.circle].forEach(x=>{
+      if(map.getLayer(x)) map.setLayoutProperty(x,'visibility','none');
+    });
+    return true;
+  }
+
+  [ids.fill,ids.line,ids.circle].forEach(x=>{
+    if(map.getLayer(x)) map.setLayoutProperty(x,'visibility','visible');
+  });
+  if(map.getSource(ids.source)) return true;
+
+  const url=pmPath(id,code);
+  if(!url) return false;
+
+  const r=await fetch(url,{cache:'no-store'});
+  if(!r.ok) throw new Error(`${r.status} ${url}`);
+  const gj=await r.json();
+
+  map.addSource(ids.source,{type:'geojson',data:gj});
+
+  const c=pmColor(id);
+
+  map.addLayer({
+    id:ids.fill,type:'fill',source:ids.source,
+    filter:['==',['geometry-type'],'Polygon'],
+    paint:{'fill-color':c,'fill-opacity':0.42}
+  });
+
+  map.addLayer({
+    id:ids.line,type:'line',source:ids.source,
+    filter:['in',['geometry-type'],['literal',['LineString','Polygon']]],
+    paint:{'line-color':c,'line-width':1.4,'line-opacity':0.9}
+  });
+
+  map.addLayer({
+    id:ids.circle,type:'circle',source:ids.source,
+    filter:['==',['geometry-type'],'Point'],
+    paint:{
+      'circle-color':c,'circle-radius':4,
+      'circle-stroke-color':'#ffffff','circle-stroke-width':1,
+      'circle-opacity':0.9
+    }
+  });
+
+  return true;
+}
+
+function pmCurrentPlaza(){
+  const s=document.getElementById('plaza-selector');
+  return s ? s.value : 'JRZ';
+}
+
+function pmWireTree(){
+  const wrappers=[...document.querySelectorAll('#variables .variable')];
+
+  catalogo.variables.forEach((v,vi)=>{
+    const w=wrappers[vi];
+    if(!w) return;
+    const rows=[...w.querySelectorAll('.subcapa')];
+    v.subcapas.forEach((sub,si)=>{
+      const row=rows[si];
+      if(!row) return;
+      const cb=row.querySelector('input[type=checkbox]');
+      const st=row.querySelector('.status');
+      if(!cb || !PREMACRO_REGISTRY[sub.id]) return;
+
+      // V14 original NO se toca: no está en PREMACRO_REGISTRY.
+      cb.disabled=false;
+      st.textContent='AUTO';
+      st.className='status status-activa';
+
+      cb.addEventListener('change',async e=>{
+        try{
+          await pmLoad(sub.id,pmCurrentPlaza(),e.target.checked);
+        }catch(err){
+          e.target.checked=false;
+          st.textContent='SIN DATO';
+          st.className='status status-publica';
+          console.warn(sub.id,err);
+        }
+      });
+    });
+  });
+}
+
+function pmClearDynamic(){
+  Object.keys(PREMACRO_REGISTRY).forEach(id=>{
+    const ids=pmIds(id);
+    [ids.fill,ids.line,ids.circle].forEach(x=>{
+      if(map.getLayer(x)) map.setLayoutProperty(x,'visibility','none');
+    });
+  });
+  document.querySelectorAll('#variables .subcapa input[type=checkbox]').forEach(cb=>{
+    const row=cb.closest('.subcapa');
+    if(row && row.querySelector('.status')?.textContent==='AUTO') cb.checked=false;
+  });
+}
+
+const pmSelector=document.getElementById('plaza-selector');
+if(pmSelector){
+  pmSelector.addEventListener('change',()=>pmClearDynamic());
+}
+
+pmWireTree();
+
+
+// =========================================================
+// AREC GEO V14 · MEJORAS PRE-MACROPOLÍGONOS
+// =========================================================
+
+const AG14_PLAZA_CENTERS = {
+  JRZ:[-106.4245,31.6904], CHH:[-106.0691,28.6320], DEL:[-105.4701,28.1901],
+  SLT:[-100.9950,25.4232], TOR:[-103.4068,25.5428], MTY:[-100.3161,25.6866],
+  HMO:[-110.9559,29.0729], OBR:[-109.9408,27.4864], MXL:[-115.4523,32.6245],
+  TIJ:[-117.0382,32.5149], GDL:[-103.3496,20.6597], QRO:[-100.3899,20.5888],
+  VER:[-96.1342,19.1738], LEO:[-101.6840,21.1220], PUE:[-98.2063,19.0414],
+  TOL:[-99.6557,19.2826], CAN:[-86.8515,21.1619], SLP:[-100.9855,22.1565],
+  AGS:[-102.2916,21.8853]
+};
+
+const AG14_V14_IDS = {
+  densidad_vivienda_ageb:['v14-densidad-vivienda-fill','v14-densidad-vivienda-line'],
+  densidad_empleo_ageb:['v14-densidad-empleo-fill','v14-densidad-empleo-line'],
+  agua_drenaje_ageb:['v14-agua-drenaje-fill','v14-agua-drenaje-line'],
+  zcu_calculada_arec:['v14-zcu-arec-fill','v14-zcu-arec-line']
+};
+
+const AG14_V14_PATHS = {
+  densidad_vivienda_ageb:['../data/{CODE}/evidence/V14/densidad_vivienda_ageb_{code}.geojson'],
+  densidad_empleo_ageb:['../data/{CODE}/evidence/V14/densidad_empleo_ageb_{code}.geojson'],
+  agua_drenaje_ageb:['../data/{CODE}/evidence/V14/agua_drenaje_ageb_{code}_v02.geojson'],
+  zcu_calculada_arec:['../data/{CODE}/evidence/V14/zcu_arec_v14_{code}.geojson']
+};
+
+const AG14_SOURCES = {
+  uso_suelo_pdu:['../data/{CODE}/evidence/V01/uso_suelo_pdu_{code}.geojson'],
+  zonificacion_habitacional:['../data/{CODE}/evidence/V01/zonificacion_habitacional_{code}.geojson'],
+  reservas_crecimiento:['../data/{CODE}/evidence/V01/reservas_crecimiento_{code}.geojson'],
+  parques_industriales:['../data/{CODE}/evidence/V02/parques_industriales_osm_{code}.geojson','../data/{CODE}/evidence/V02/parques_industriales_{code}.geojson'],
+  empleo_industrial_denue:['../data/{CODE}/evidence/V02/empleo_industrial_denue_{code}.geojson'],
+  crecimiento_parques_serie:['../data/{CODE}/evidence/V02/crecimiento_parques_serie_{code}.geojson'],
+  proyectos_competencia:['../data/{CODE}/evidence/V03/proyectos_competencia_{code}.geojson'],
+  oferta_vivienda_registrada:['../data/{CODE}/evidence/V03/oferta_vivienda_registrada_resumen_{code}.geojson'],
+  equipamientos_existentes:['../data/{CODE}/evidence/V04/equipamientos_existentes_{code}.geojson','../data/{CODE}/evidence/V04/equipamiento_educativo_sep_{code}.geojson'],
+  equipamientos_por_desarrollar:['../data/{CODE}/evidence/V04/equipamientos_por_desarrollar_{code}.geojson'],
+  inundacion:['../data/{CODE}/evidence/V05/inundacion_{code}.geojson'],
+  geologico_remocion:['../data/{CODE}/evidence/V05/geologico_remocion_{code}.geojson'],
+  incendios:['../data/{CODE}/evidence/V05/incendios_{code}.geojson'],
+  otros_riesgos_atlas:['../data/{CODE}/evidence/V05/otros_riesgos_atlas_{code}.geojson'],
+  anp_conanp:['../data/{CODE}/evidence/V06/anp_conanp_{code}.geojson'],
+  cuerpos_agua:['../data/{CODE}/evidence/V06/cuerpos_agua_osm_{code}.geojson'],
+  vedas_hidricas:['../data/{CODE}/evidence/V06/vedas_hidricas_{code}.geojson'],
+  vias_primarias:['../data/{CODE}/evidence/V07/vias_primarias_{code}.geojson'],
+  red_vial_osm:['../data/{CODE}/evidence/V07/red_vial_osm_{code}.geojson'],
+  proyectos_viales_futuros:['../data/{CODE}/evidence/V07/proyectos_viales_futuros_{code}.geojson'],
+  industria_denue:['../data/{CODE}/evidence/V08/industria_denue_{code}.geojson'],
+  zonas_industriales:['../data/{CODE}/evidence/V08/zonas_industriales_osm_{code}.geojson','../data/{CODE}/evidence/V08/zonas_industriales_{code}.geojson'],
+  comercios_denue:['../data/{CODE}/evidence/V09/comercios_denue_{code}.geojson'],
+  abasto_mercados:['../data/{CODE}/evidence/V09/abasto_mercados_{code}.geojson'],
+  centros_comerciales:['../data/{CODE}/evidence/V09/centros_comerciales_osm_{code}.geojson','../data/{CODE}/evidence/V09/centros_comerciales_{code}.geojson'],
+  hospitales:['../data/{CODE}/evidence/V10/hospitales_{code}.geojson'],
+  clinicas_centros_salud:['../data/{CODE}/evidence/V10/clinicas_centros_salud_{code}.geojson'],
+  universidades:['../data/{CODE}/evidence/V11/universidades_sep_{code}.geojson','../data/{CODE}/evidence/V11/universidades_{code}.geojson'],
+  primarias:['../data/{CODE}/evidence/V12/primarias_sep_{code}.geojson','../data/{CODE}/evidence/V12/primarias_{code}.geojson'],
+  secundarias:['../data/{CODE}/evidence/V12/secundarias_sep_{code}.geojson','../data/{CODE}/evidence/V12/secundarias_{code}.geojson'],
+  preescolar:['../data/{CODE}/evidence/V12/preescolar_sep_{code}.geojson','../data/{CODE}/evidence/V12/preescolar_{code}.geojson'],
+  media_superior:['../data/{CODE}/evidence/V12/media_superior_sep_{code}.geojson','../data/{CODE}/evidence/V12/media_superior_{code}.geojson'],
+  huella_2015:['../data/{CODE}/evidence/V13/huella_2015_{code}.geojson'],
+  huella_2025:['../data/{CODE}/evidence/V13/huella_2025_{code}.geojson'],
+  expansion_2015_2025:['../data/{CODE}/evidence/V13/expansion_2015_2025_{code}.geojson'],
+  expansion_mayor_2ha:['../data/{CODE}/evidence/V13/expansion_mayor_2ha_{code}.geojson'],
+  tierras_ruba:['../data/{CODE}/evidence/V15/tierras_ruba_{code}.geojson'],
+  desarrollos_ruba:['../data/{CODE}/evidence/V16/desarrollos_ruba_{code}.geojson'],
+  banco_tierras:['../data/{CODE}/evidence/V17/banco_tierras_{code}.geojson'],
+  rec_vigente:['../data/{CODE}/evidence/V18/rec_vigente_{code}.geojson'],
+  agua_acuiferos:['../data/{CODE}/evidence/V19/agua_acuiferos_{code}.geojson'],
+  agua_pozos_piezometria:['../data/{CODE}/evidence/V19/agua_pozos_piezometria_{code}.geojson'],
+  drenaje_cobertura:['../data/{CODE}/evidence/V19/drenaje_cobertura_{code}.geojson'],
+  electricidad_lineas:['../data/{CODE}/evidence/V19/electricidad_lineas_{code}.geojson'],
+  electricidad_subestaciones:['../data/{CODE}/evidence/V19/electricidad_subestaciones_{code}.geojson'],
+  gas:['../data/{CODE}/evidence/V19/gas_{code}.geojson'],
+  vegetacion_ndvi:['../data/{CODE}/evidence/V20/vegetacion_ndvi_{code}.geojson'],
+  islas_calor:['../data/{CODE}/evidence/V20/islas_calor_{code}.geojson'],
+  contexto_social:['../data/{CODE}/evidence/V20/contexto_social_{code}.geojson'],
+  proveedurias:['../data/{CODE}/evidence/V21/proveedurias_potenciales_denue_{code}.geojson','../data/{CODE}/evidence/V21/proveedurias_{code}.geojson'],
+  viviendas_censo_ageb:['../data/{CODE}/evidence/V22/viviendas_censo_ageb_{code}.geojson'],
+  viviendas_deshabitadas:['../data/{CODE}/evidence/V22/viviendas_deshabitadas_{code}.geojson'],
+  residencial_existente:['../data/{CODE}/evidence/V22/residencial_existente_osm_{code}.geojson'],
+  vivienda_vertical:['../data/{CODE}/evidence/V22/vivienda_vertical_{code}.geojson'],
+  vivienda_media:['../data/{CODE}/evidence/V22/vivienda_media_{code}.geojson'],
+  vivienda_interes_social:['../data/{CODE}/evidence/V22/vivienda_interes_social_{code}.geojson'],
+  residencial_premium:['../data/{CODE}/evidence/V22/residencial_premium_{code}.geojson'],
+  residencial_corredor_industrial:['../data/{CODE}/evidence/V22/residencial_corredor_industrial_{code}.geojson'],
+  vivienda_bienestar:['../data/{CODE}/evidence/V22/vivienda_bienestar_{code}.geojson'],
+  rezago_social:['../data/{CODE}/evidence/V22/rezago_social_{code}.geojson']
+};
+
+const AG14_META = {
+  densidad_vivienda_ageb:{source:'INEGI Censo 2020 + Marco Geoestadístico 2020',method:'Densidad de vivienda por AGEB. Fórmula principal: viviendas / superficie del AGEB en hectáreas.',formula:'DENS_VIV_HA = VIVTOT_NUM / AREA_HA',legend:[['#f7fcf5','< 10 viv/ha'],['#e5f5e0','10–<20'],['#c7e9c0','20–<30'],['#a1d99b','30–<40'],['#74c476','40–<50'],['#238b45','≥ 50 viv/ha']]},
+  densidad_empleo_ageb:{source:'INEGI DENUE + Marco Geoestadístico 2020',method:'Empleo estimado por AGEB a partir de rangos DENUE y superficie. Los establecimientos 251+ usan 300 como valor provisional del pipeline.',formula:'DENS_EMPLEO_HA = EMPLEO_EST_TOTAL / AREA_HA',legend:[['#fff5f0','< 5 empleos/ha'],['#fee0d2','5–<10'],['#fcbba1','10–<20'],['#fc9272','20–<40'],['#fb6a4a','40–<80'],['#de2d26','80–<120'],['#a50f15','≥ 120 empleos/ha']]},
+  agua_drenaje_ageb:{source:'INEGI Censo 2020',method:'Proxy de servicios por AGEB usando porcentajes separados de agua y drenaje. No representa la intersección exacta de viviendas con ambos servicios.',formula:'Clase verde si AGUA_PCT > 75 y DRENAJE_PCT > 75',legend:[['#2ca25f','Agua >75% y drenaje >75%'],['#fec44f','Solo uno >75%'],['#de2d26','Ninguno >75%'],['#bdbdbd','Datos insuficientes']]},
+  zcu_calculada_arec:{source:'AREC GEO · V14',method:'Clasificación territorial AREC derivada por el pipeline con densidad, empleo, servicios y satisfactores. Es una réplica analítica; no sustituye la ZCU oficial validada.',formula:'CLASE_ZCU_AREC_V14',legend:[['#1b7837','Z1 Consolidada'],['#5aae61','Z2 Semiconsolidada'],['#fdae61','Z3 En proceso'],['#2b83ba','Z4 Evaluación con empleo'],['#762a83','Z6 Potencial económico'],['#bdbdbd','Z7 Sin clasificar']]},
+  expansion_mayor_2ha:{source:'GHSL 2015/2025',method:'Cambio de superficie construida por celda. El corte operativo identifica deltas de superficie construida de al menos 20,000 m².',formula:'DELTA_BUILT_M2 >= 20,000',legend:[['#004a7c','Expansión ≥ 2 ha']]},
+  expansion_2015_2025:{source:'GHSL 2015/2025',method:'Diferencia temporal de superficie construida por celda.',formula:'BUILT_2025 - BUILT_2015',legend:[['#1f78b4','Expansión positiva']]},
+  vegetacion_ndvi:{source:'Sentinel-2 L2A / Planetary Computer',method:'Índice normalizado de vegetación calculado con NIR y rojo.',formula:'NDVI = (NIR - RED) / (NIR + RED)',legend:[['#d73027','NDVI bajo'],['#fee08b','NDVI medio'],['#1a9850','NDVI alto']]},
+  islas_calor:{source:'Landsat Collection 2 L2 / Planetary Computer',method:'Temperatura superficial media por celda y anomalía respecto a la mediana de la plaza.',formula:'ISLA_CALOR_ANOM_C = LST_C_MEAN - mediana(LST_C_MEAN)',legend:[['#fee8c8','Menor temperatura'],['#fdbb84','Intermedia'],['#e34a33','Mayor temperatura']]},
+  empleo_industrial_denue:{source:'INEGI DENUE',method:'Establecimientos/empleo industrial filtrados por actividad económica en el área de la plaza.',formula:'Filtro sectorial DENUE',legend:[['#555555','Actividad industrial']]},
+  industria_denue:{source:'INEGI DENUE',method:'Establecimientos industriales georreferenciados.',formula:'Filtro sectorial DENUE',legend:[['#555555','Industria']]},
+  hospitales:{source:'INEGI DENUE',method:'Establecimientos hospitalarios georreferenciados.',formula:'Filtro de actividad DENUE',legend:[['#c92828','Hospital']]},
+  clinicas_centros_salud:{source:'INEGI DENUE',method:'Clínicas y centros de salud georreferenciados.',formula:'Filtro de actividad DENUE',legend:[['#ee6666','Clínica / centro de salud']]},
+  universidades:{source:'SEP CCT 2025 / DENUE',method:'Se prioriza Catálogo SEP; si no existe la capa SEP se usa la capa DENUE.',formula:'Clasificación por nivel/servicio educativo',legend:[['#6a3d9a','Universidad / superior']]},
+  primarias:{source:'SEP CCT 2025 / DENUE',method:'Se prioriza Catálogo SEP; fallback a DENUE.',formula:'Clasificación educativa',legend:[['#188f68','Primaria']]},
+  secundarias:{source:'SEP CCT 2025 / DENUE',method:'Se prioriza Catálogo SEP; fallback a DENUE.',formula:'Clasificación educativa',legend:[['#0f7558','Secundaria']]},
+  preescolar:{source:'SEP CCT 2025 / DENUE',method:'Se prioriza Catálogo SEP; fallback a DENUE.',formula:'Clasificación educativa',legend:[['#4dbb93','Preescolar']]},
+  media_superior:{source:'SEP CCT 2025 / DENUE',method:'Se prioriza Catálogo SEP; fallback a DENUE.',formula:'Clasificación educativa',legend:[['#2f6f9f','Media superior']]}
+};
+
+let AG14_SELECTED_LAYER = null;
+const AG14_USER_MAPS = new Map();
+let AG14_USER_SEQ = 0;
+
+function ag14Tpl(path,code){return path.replaceAll('{CODE}',code).replaceAll('{code}',code.toLowerCase());}
+function ag14CurrentPlaza(){const s=document.getElementById('plaza-selector');return s?s.value:'JRZ';}
+function ag14AllPaths(id,code){
+  const src=AG14_SOURCES[id]||AG14_V14_PATHS[id]||[];
+  return src.map(p=>ag14Tpl(p,code));
+}
+async function ag14FetchFirst(id,code){
+  const paths=ag14AllPaths(id,code); let last=null;
+  for(const url of paths){
+    try{const r=await fetch(url,{cache:'no-store'}); if(!r.ok){last=new Error(`${r.status} ${url}`);continue;} const gj=await r.json(); return {gj,url};}
+    catch(e){last=e;}
+  }
+  return {gj:fcVacio(),url:null,error:last||new Error('Sin archivo candidato')};
+}
+
+function ag14IndexTree(){
+  const wrappers=[...document.querySelectorAll('#variables .variable')];
+  catalogo.variables.forEach((v,vi)=>{
+    const w=wrappers[vi]; if(!w)return; w.dataset.varId=String(v.id); w.dataset.varName=v.nombre;
+    const rows=[...w.querySelectorAll('.subcapa')];
+    v.subcapas.forEach((sub,si)=>{const row=rows[si]; if(!row)return; const cb=row.querySelector('input[type=checkbox]'); const st=row.querySelector('.status');
+      row.dataset.layerId=sub.id; row.dataset.layerName=sub.nombre; row.dataset.varId=String(v.id);
+      if(cb){cb.dataset.layerId=sub.id;cb.dataset.layerName=sub.nombre;}
+      if(st){st.dataset.layerId=sub.id;}
+      row.addEventListener('click',e=>{if(e.target.closest('input'))return; ag14SelectLayer(sub.id,sub.nombre);});
+    });
+  });
+}
+
+function ag14BuildGroups(){
+  const container=document.getElementById('variables'); if(!container)return;
+  const wrappers=[...container.querySelectorAll('.variable')];
+  const groups=[
+    {id:'official',title:'Mapas de fuentes oficiales / automáticas',ids:new Set([1,2,3,4,5,6,7,8,9,10,11,12,19,22])},
+    {id:'own',title:'Mapas propios AREC',ids:new Set([13,14,20])},
+    {id:'internal',title:'Mapas internos / RUBA',ids:new Set([15,16,17,18,21,23])}
+  ];
+  container.innerHTML='';
+  for(const g of groups){
+    const sec=document.createElement('div');sec.className='ag14-section';sec.innerHTML=`<div class="ag14-section-head"><span>${g.title}</span><span class="ag14-section-count"></span></div><div class="ag14-section-body"></div>`;
+    const body=sec.querySelector('.ag14-section-body'); const chosen=wrappers.filter(w=>g.ids.has(Number(w.dataset.varId))); chosen.forEach(w=>body.appendChild(w)); sec.querySelector('.ag14-section-count').textContent=`${chosen.length} variables`;
+    sec.querySelector('.ag14-section-head').addEventListener('click',()=>{body.style.display=body.style.display==='none'?'block':'none';}); container.appendChild(sec);
+  }
+  const user=document.createElement('div');user.className='ag14-section';user.innerHTML=`<div class="ag14-section-head"><span>Mis mapas</span><span class="ag14-section-count">GeoJSON · KML · KMZ · SHP ZIP</span></div><div class="ag14-section-body"><button class="ag14-upload-btn" id="ag14-upload-btn">+ Subir mapa propio</button><div id="ag14-user-maps"></div></div>`; container.appendChild(user);
+  const macro=document.createElement('div');macro.className='ag14-section';macro.innerHTML=`<div class="ag14-section-head"><span>Mapas de macropolígonos</span><span class="ag14-section-count">siguiente ejercicio</span></div><div class="ag14-section-body"><div class="ag14-macro-row"><span><b>T1</b><br>Oportunidad urbana</span><span class="status status-manual">PRÓXIMO</span></div><div class="ag14-macro-row"><span><b>T2</b><br>Tierra / compra</span><span class="status status-manual">PRÓXIMO</span></div><div class="ag14-macro-row"><span><b>T3</b><br>Mejores celdas por variable</span><span class="status status-manual">PRÓXIMO</span></div></div>`; container.appendChild(macro);
+  document.getElementById('ag14-upload-btn').addEventListener('click',()=>document.getElementById('ag14-file-input').click());
+}
+
+function ag14LayerName(id){
+  for(const v of catalogo.variables){for(const s of v.subcapas){if(s.id===id)return `V${String(v.id).padStart(2,'0')} · ${s.nombre}`;}}
+  if(AG14_USER_MAPS.has(id))return AG14_USER_MAPS.get(id).name; return id;
+}
+function ag14CatalogSub(id){for(const v of catalogo.variables){for(const s of v.subcapas){if(s.id===id)return {v,s};}}return null;}
+
+function ag14DefaultMeta(id){
+  const cs=ag14CatalogSub(id); const color=pmColor(id);
+  if(cs)return {source:cs.s.fuente||cs.v.fuente_base||'Fuente catalogada',method:`Geometría: ${cs.s.geometria||'s/d'}. Función espacial: ${cs.s.funcion_espacial||'s/d'}. Efecto: ${cs.s.efecto||'s/d'}.`,formula:'Sin fórmula numérica adicional declarada en el catálogo.',legend:[[color,'Capa activa']]};
+  return {source:'Mapa propio del usuario',method:'Capa cargada localmente en el navegador. No modifica el pipeline AREC GEO.',formula:'Sin cálculo AREC.',legend:[['#1479a6','Mapa propio']]};
+}
+function ag14Meta(id){return AG14_META[id]||ag14DefaultMeta(id);}
+
+function ag14RenderLegend(id){
+  const el=document.getElementById('ag14-legend'); if(!el)return; const m=ag14Meta(id); el.innerHTML='';
+  (m.legend||[]).forEach(([c,t])=>{const r=document.createElement('div');r.className='ag14-legend-row';r.innerHTML=`<span class="ag14-swatch" style="background:${c}"></span><span>${t}</span>`;el.appendChild(r);});
+  if(!(m.legend||[]).length)el.innerHTML='<div class="ag-small">Sin clasificación cromática declarada.</div>';
+}
+function ag14RenderMethod(id){
+  const el=document.getElementById('ag14-method'); if(!el)return; const m=ag14Meta(id); el.innerHTML=`<b>Fuente:</b> ${m.source||'s/d'}<br><br><b>Método:</b> ${m.method||'s/d'}<br><br><b>Regla / fórmula:</b> ${m.formula||'s/d'}`;
+}
+function ag14SelectLayer(id,name=null){
+  AG14_SELECTED_LAYER=id; const n=document.getElementById('ag14-selected-name'); if(n)n.textContent=name||ag14LayerName(id); const st=document.getElementById('ag14-selected-state'); if(st)st.textContent=`Plaza: ${ag14CurrentPlaza()} · usa el control de transparencia o haz clic en el mapa para inspeccionar datos.`; ag14RenderLegend(id); ag14RenderMethod(id); ag14SyncOpacityUI(); ag14RenderActiveChips();
+}
+
+function ag14LogicalLayerIds(id){
+  if(AG14_V14_IDS[id])return AG14_V14_IDS[id];
+  if(AG14_USER_MAPS.has(id)){const u=AG14_USER_MAPS.get(id);return [u.fill,u.line,u.circle];}
+  const x=pmIds(id);return [x.fill,x.line,x.circle];
+}
+function ag14SetOpacity(id,val){
+  ag14LogicalLayerIds(id).forEach(lid=>{if(!map.getLayer(lid))return; const typ=map.getLayer(lid).type; try{if(typ==='fill')map.setPaintProperty(lid,'fill-opacity',val);else if(typ==='line')map.setPaintProperty(lid,'line-opacity',Math.max(.1,val));else if(typ==='circle')map.setPaintProperty(lid,'circle-opacity',val);}catch(e){}});
+}
+function ag14GetOpacity(id){
+  for(const lid of ag14LogicalLayerIds(id)){if(!map.getLayer(lid))continue; const typ=map.getLayer(lid).type; try{const p=typ==='fill'?'fill-opacity':typ==='line'?'line-opacity':typ==='circle'?'circle-opacity':null; if(p){const v=map.getPaintProperty(lid,p); if(typeof v==='number')return v;}}catch(e){}}
+  return .72;
+}
+function ag14SyncOpacityUI(){const s=document.getElementById('ag14-opacity');if(!s||!AG14_SELECTED_LAYER)return;const v=ag14GetOpacity(AG14_SELECTED_LAYER);s.value=String(v);document.getElementById('ag14-opacity-value').textContent=`${Math.round(v*100)}%`;}
+document.getElementById('ag14-opacity')?.addEventListener('input',e=>{const v=Number(e.target.value);document.getElementById('ag14-opacity-value').textContent=`${Math.round(v*100)}%`;if(AG14_SELECTED_LAYER)ag14SetOpacity(AG14_SELECTED_LAYER,v);});
+
+function ag14IsChecked(id){const cb=document.querySelector(`.subcapa input[data-layer-id="${id}"]`);return !!cb?.checked;}
+function ag14ActiveIds(){const ids=[];document.querySelectorAll('.subcapa input[data-layer-id]:checked').forEach(cb=>ids.push(cb.dataset.layerId));AG14_USER_MAPS.forEach((u,id)=>{if(u.checked)ids.push(id)});return [...new Set(ids)];}
+function ag14RenderActiveChips(){const root=document.getElementById('ag14-active-layers');if(!root)return;root.innerHTML='';ag14ActiveIds().forEach(id=>{const b=document.createElement('button');b.className='ag14-chip on';b.textContent=ag14LayerName(id);b.addEventListener('click',()=>ag14SelectLayer(id));root.appendChild(b);});if(!root.children.length)root.innerHTML='<span class="ag-small">Ninguna subcapa activa.</span>';}
+
+// Sustituye carga dinámica: intenta varias fuentes y actualiza la fuente existente al cambiar de plaza.
+pmLoad = async function(id,code,checked){
+  const ids=pmIds(id); const visible=checked?'visible':'none';
+  if(!checked){[ids.fill,ids.line,ids.circle].forEach(x=>{if(map.getLayer(x))map.setLayoutProperty(x,'visibility','none')});ag14RenderActiveChips();return true;}
+  const {gj,url,error}=await ag14FetchFirst(id,code);
+  if(!url){if(map.getSource(ids.source))map.getSource(ids.source).setData(fcVacio());[ids.fill,ids.line,ids.circle].forEach(x=>{if(map.getLayer(x))map.setLayoutProperty(x,'visibility','visible')});ag14SetStatus(id,'SIN DATO','bad');ag14SelectLayer(id);ag14RenderActiveChips();return false;}
+  if(map.getSource(ids.source)){map.getSource(ids.source).setData(gj);[ids.fill,ids.line,ids.circle].forEach(x=>{if(map.getLayer(x))map.setLayoutProperty(x,'visibility','visible')});}
+  else{
+    map.addSource(ids.source,{type:'geojson',data:gj}); const c=pmColor(id);
+    map.addLayer({id:ids.fill,type:'fill',source:ids.source,filter:['==',['geometry-type'],'Polygon'],paint:{'fill-color':c,'fill-opacity':.42}});
+    map.addLayer({id:ids.line,type:'line',source:ids.source,filter:['in',['geometry-type'],['literal',['LineString','Polygon']]],paint:{'line-color':c,'line-width':1.4,'line-opacity':.9}});
+    map.addLayer({id:ids.circle,type:'circle',source:ids.source,filter:['==',['geometry-type'],'Point'],paint:{'circle-color':c,'circle-radius':4,'circle-stroke-color':'#fff','circle-stroke-width':1,'circle-opacity':.9}});
+  }
+  const n=(gj.features||[]).length; ag14SetStatus(id,n?`DISPONIBLE · ${n}`:'VACÍA',n?'good':'wait'); ag14SelectLayer(id); ag14RenderActiveChips(); return true;
+};
+
+function ag14SetStatus(id,text,kind='wait'){const st=document.querySelector(`.status[data-layer-id="${id}"]`)||document.querySelector(`.subcapa[data-layer-id="${id}"] .status`);if(!st)return;st.textContent=text;st.classList.remove('ag14-status-good','ag14-status-bad','ag14-status-wait');st.classList.add(kind==='good'?'ag14-status-good':kind==='bad'?'ag14-status-bad':'ag14-status-wait');}
+
+// Limpiar datos al cambiar plaza, pero NO desmarcar subcapas.
+limpiarPlazaAnterior = function(){
+  ['localidad','ageb','grid','v14-densidad-vivienda','v14-densidad-empleo','v14-agua-drenaje','v14-zcu-arec'].forEach(id=>setSourceData(id,fcVacio()));
+};
+pmClearDynamic = function(){Object.keys(PREMACRO_REGISTRY).forEach(id=>{const ids=pmIds(id);if(map.getSource(ids.source))map.getSource(ids.source).setData(fcVacio());});};
+
+const AG14_originalCargarPlazaV14 = cargarPlazaV14;
+cargarPlazaV14 = async function(codigo){
+  const activos=ag14ActiveIds().filter(id=>!AG14_USER_MAPS.has(id));
+  const t0=performance.now();
+  await AG14_originalCargarPlazaV14(codigo);
+  // Garantizar movimiento de mapa incluso si la localidad no cargó.
+  try{const r=await fetch(`../data/${codigo}/evidence/base/localidad_${codigo.toLowerCase()}.geojson`,{cache:'no-store'});if(r.ok){const gj=await r.json();const b=boundsFC(gj);if(b)map.fitBounds(b,{padding:35,duration:700});else throw new Error('sin bounds');}else throw new Error('sin localidad');}
+  catch(e){const c=AG14_PLAZA_CENTERS[codigo];if(c)map.flyTo({center:c,zoom:10.5,essential:true});}
+  for(const id of activos){if(AG14_V14_IDS[id])continue;await pmLoad(id,codigo,true);}
+  // V14 conserva visibilidad y cambia datos porque sus sources ya fueron actualizados por el cargador original.
+  await ag14RefreshAvailability(codigo);
+  const s=document.getElementById('ag-inspector-status');if(s)s.textContent=`${codigo} · ${PLAZAS_MULTI[codigo]?.nombre||''}`;
+  const sub=document.getElementById('ag-inspector-sub');if(sub)sub.textContent=`Cambio de plaza completado en ${((performance.now()-t0)/1000).toFixed(1)} s · las subcapas activas se conservaron.`;
+  ag14RenderActiveChips();
+};
+
+async function ag14HeadExists(url){try{const r=await fetch(url,{method:'HEAD',cache:'no-store'});return r.ok;}catch(e){return false;}}
+async function ag14AnyExists(id,code){for(const u of ag14AllPaths(id,code)){if(await ag14HeadExists(u))return true;}return false;}
+async function ag14RefreshAvailability(code){
+  const mapped=[]; document.querySelectorAll('.subcapa[data-layer-id]').forEach(row=>{const id=row.dataset.layerId;if(AG14_SOURCES[id]||AG14_V14_PATHS[id])mapped.push(id);});
+  const unique=[...new Set(mapped)]; let idx=0; const workers=Array.from({length:6},async()=>{while(idx<unique.length){const id=unique[idx++];const ok=await ag14AnyExists(id,code);if(ok)ag14SetStatus(id,'DISPONIBLE','good');else{const cs=ag14CatalogSub(id);const state=cs?.s?.estado||'';ag14SetStatus(id,state.includes('interna')?'INTERNA':state.includes('manual')?'MANUAL':'SIN GENERAR',state.includes('interna')||state.includes('manual')?'wait':'bad');}}}); await Promise.all(workers);
+}
+
+function ag14EnsureWiring(){
+  document.querySelectorAll('.subcapa[data-layer-id]').forEach(row=>{const id=row.dataset.layerId;const cb=row.querySelector('input[type=checkbox]');if(!cb)return;
+    if((AG14_SOURCES[id]||AG14_V14_PATHS[id]) && !PREMACRO_REGISTRY[id] && !AG14_V14_IDS[id]){
+      cb.disabled=false;cb.addEventListener('change',async e=>{await pmLoad(id,ag14CurrentPlaza(),e.target.checked);if(e.target.checked)ag14SelectLayer(id,row.dataset.layerName);});
+    }
+    cb.addEventListener('change',()=>{if(cb.checked)ag14SelectLayer(id,row.dataset.layerName);ag14RenderActiveChips();});
+  });
+}
+
+function ag14RenderedLayerIds(){
+  const ids=[]; const add=x=>{if(map.getLayer(x)&&map.getLayoutProperty(x,'visibility')!=='none')ids.push(x);};
+  Object.values(AG14_V14_IDS).flat().forEach(add);
+  Object.keys(AG14_SOURCES).forEach(id=>{const x=pmIds(id);[x.fill,x.line,x.circle].forEach(add)});
+  AG14_USER_MAPS.forEach(u=>[u.fill,u.line,u.circle].forEach(add));
+  return ids;
+}
+function ag14LogicalFromRendered(lid){
+  for(const [id,arr] of Object.entries(AG14_V14_IDS)){if(arr.includes(lid))return id;}
+  if(lid.startsWith('pm-fill-'))return lid.slice(8);if(lid.startsWith('pm-line-'))return lid.slice(8);if(lid.startsWith('pm-circle-'))return lid.slice(10);
+  for(const [id,u] of AG14_USER_MAPS){if([u.fill,u.line,u.circle].includes(lid))return id;}return lid;
+}
+function ag14Esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function ag14RenderFeatures(features){
+  const root=document.getElementById('ag14-feature-info');if(!root)return;root.innerHTML='';
+  if(!features.length){root.innerHTML='<div class="ag-small" style="margin-top:8px;">No se encontró objeto AREC en ese punto.</div>';return;}
+  features.slice(0,8).forEach(f=>{const id=ag14LogicalFromRendered(f.layer.id);const b=document.createElement('div');b.className='ag14-feature-block';const props=Object.entries(f.properties||{}).slice(0,35).map(([k,v])=>`<tr><td>${ag14Esc(k)}</td><td>${ag14Esc(v)}</td></tr>`).join('');b.innerHTML=`<div class="ag14-feature-title">${ag14Esc(ag14LayerName(id))}</div><table class="ag14-props">${props||'<tr><td colspan="2">Sin atributos.</td></tr>'}</table>`;root.appendChild(b);});
+}
+map.on('click',e=>{const layers=ag14RenderedLayerIds();if(!layers.length)return;const fs=map.queryRenderedFeatures(e.point,{layers});ag14RenderFeatures(fs);if(fs.length){const id=ag14LogicalFromRendered(fs[0].layer.id);ag14SelectLayer(id);}});
+
+// Mapas propios
+async function ag14FileToGeoJSON(file){
+  const name=file.name.toLowerCase();
+  if(name.endsWith('.geojson')||name.endsWith('.json'))return JSON.parse(await file.text());
+  if(name.endsWith('.kml')){if(!window.toGeoJSON)throw new Error('Librería KML no disponible');const dom=new DOMParser().parseFromString(await file.text(),'text/xml');return window.toGeoJSON.kml(dom);}
+  if(name.endsWith('.kmz')){if(!window.JSZip||!window.toGeoJSON)throw new Error('Librería KMZ no disponible');const zip=await window.JSZip.loadAsync(await file.arrayBuffer());const kmlName=Object.keys(zip.files).find(n=>n.toLowerCase().endsWith('.kml'));if(!kmlName)throw new Error('KMZ sin KML');const dom=new DOMParser().parseFromString(await zip.files[kmlName].async('text'),'text/xml');return window.toGeoJSON.kml(dom);}
+  if(name.endsWith('.zip')){if(!window.shp)throw new Error('Librería SHP ZIP no disponible');const result=await window.shp(await file.arrayBuffer());if(Array.isArray(result))return {type:'FeatureCollection',features:result.flatMap(x=>x.features||[])};return result;}
+  throw new Error('Formato no soportado. Usa GeoJSON, KML, KMZ o SHP ZIP.');
+}
+function ag14AddUserMap(name,gj){
+  const id=`user_${++AG14_USER_SEQ}`;const safe=id;const src=`usr-src-${safe}`,fill=`usr-fill-${safe}`,line=`usr-line-${safe}`,circle=`usr-circle-${safe}`;map.addSource(src,{type:'geojson',data:gj});
+  map.addLayer({id:fill,type:'fill',source:src,filter:['==',['geometry-type'],'Polygon'],paint:{'fill-color':'#1479a6','fill-opacity':.34}});
+  map.addLayer({id:line,type:'line',source:src,paint:{'line-color':'#0b4f6c','line-width':2,'line-opacity':.9}});
+  map.addLayer({id:circle,type:'circle',source:src,filter:['==',['geometry-type'],'Point'],paint:{'circle-color':'#1479a6','circle-radius':5,'circle-stroke-color':'#fff','circle-stroke-width':1,'circle-opacity':.9}});
+  AG14_USER_MAPS.set(id,{id,name,src,fill,line,circle,checked:true,gj}); const b=boundsFC(gj);if(b)map.fitBounds(b,{padding:40,duration:600}); ag14RenderUserMaps();ag14SelectLayer(id,name);ag14RenderActiveChips();
+}
+function ag14RemoveUserMap(id){const u=AG14_USER_MAPS.get(id);if(!u)return;[u.fill,u.line,u.circle].forEach(x=>{if(map.getLayer(x))map.removeLayer(x)});if(map.getSource(u.src))map.removeSource(u.src);AG14_USER_MAPS.delete(id);ag14RenderUserMaps();ag14RenderActiveChips();}
+function ag14RenderUserMaps(){const root=document.getElementById('ag14-user-maps');if(!root)return;root.innerHTML='';AG14_USER_MAPS.forEach((u,id)=>{const r=document.createElement('div');r.className='ag14-user-row';r.innerHTML=`<input type="checkbox" ${u.checked?'checked':''}><span title="${ag14Esc(u.name)}">${ag14Esc(u.name)}</span><span class="ag14-user-actions"><button class="ag14-mini" data-zoom>Ver</button><button class="ag14-mini" data-del>×</button></span>`;const cb=r.querySelector('input');cb.addEventListener('change',()=>{u.checked=cb.checked;[u.fill,u.line,u.circle].forEach(x=>{if(map.getLayer(x))map.setLayoutProperty(x,'visibility',u.checked?'visible':'none')});ag14RenderActiveChips();});r.querySelector('[data-zoom]').addEventListener('click',()=>{const b=boundsFC(u.gj);if(b)map.fitBounds(b,{padding:40});ag14SelectLayer(id,u.name);});r.querySelector('[data-del]').addEventListener('click',()=>ag14RemoveUserMap(id));root.appendChild(r);});if(!root.children.length)root.innerHTML='<div class="ag-small">Aún no has cargado mapas propios.</div>';}
+document.getElementById('ag14-file-input')?.addEventListener('change',async e=>{for(const file of e.target.files){try{const gj=await ag14FileToGeoJSON(file);ag14AddUserMap(file.name,gj);}catch(err){alert(`${file.name}: ${err.message}`);}}e.target.value='';});
+
+// Etiqueta de estado de plaza en la parte superior
+const ag14Status=document.createElement('div');ag14Status.id='ag14-plaza-status';document.getElementById('ag-selector-slot')?.appendChild(ag14Status);
+const ag14Sel=document.getElementById('plaza-selector');if(ag14Sel)ag14Sel.addEventListener('change',()=>{ag14Status.textContent=`Cargando ${ag14Sel.value} y conservando subcapas activas…`;setTimeout(()=>{ag14Status.textContent='';},1600);});
+
+ag14IndexTree();
+ag14BuildGroups();
+ag14EnsureWiring();
+ag14RenderUserMaps();
+ag14RenderActiveChips();
+setTimeout(()=>ag14RefreshAvailability(ag14CurrentPlaza()),900);
+
+
+
+// =========================================================
+// AREC GEO V15 · ÁMBITO METROPOLITANO
+// Se apoya en evidence_metro/ y base_metro/.
+// NO modifica la simbología original de V14.
+// =========================================================
+
+let AG15_SCOPE = 'metro_analysis';
+
+const AG15_SCOPE_NAMES = {
+  city:'Ciudad',
+  municipality:'Municipio central',
+  metro_analysis:'Metrópoli · análisis',
+  metro_official:'Metrópoli · oficial'
+};
+
+function ag15Scope(){
+  const s=document.getElementById('ag15-scope-selector');
+  return s ? s.value : AG15_SCOPE;
+}
+
+function ag15BaseUrl(code,name){
+  return `../data/${code}/evidence/base_metro/${name}_${code.toLowerCase()}.geojson`;
+}
+
+async function ag15Json(url){
+  const r=await fetch(url,{cache:'no-store'});
+  if(!r.ok) throw new Error(`${r.status} ${url}`);
+  return await r.json();
+}
+
+async function ag15JsonOptional(url){
+  try{return await ag15Json(url);}catch(e){return fcVacio();}
+}
+
+function ag15SetSource(id,gj){
+  if(map.getSource(id)) map.getSource(id).setData(gj||fcVacio());
+}
+
+function ag15EnsureTerritorialSources(){
+  const defs=[
+    ['ag15-metro-official','#674ea7',3,[5,3]],
+    ['ag15-metro-analysis','#0b6596',2,[3,2]],
+    ['ag15-municipios','#667681',1,[2,2]],
+    ['ag15-central','#111111',2,[4,2]]
+  ];
+  for(const [src,color,width,dash] of defs){
+    if(!map.getSource(src))map.addSource(src,{type:'geojson',data:fcVacio()});
+    const lid=src+'-line';
+    if(!map.getLayer(lid)){
+      map.addLayer({
+        id:lid,type:'line',source:src,
+        paint:{
+          'line-color':color,
+          'line-width':width,
+          'line-opacity':.9,
+          'line-dasharray':dash
+        }
+      });
+    }
+  }
+  if(!map.getLayer('ag15-metro-analysis-fill')){
+    map.addLayer({
+      id:'ag15-metro-analysis-fill',
+      type:'fill',
+      source:'ag15-metro-analysis',
+      paint:{'fill-color':'#0b6596','fill-opacity':.035}
+    });
+  }
+}
+
+function ag15TerritorialVisibility(){
+  const states={
+    'ag15-metro-official-line':document.getElementById('ag15-toggle-metro-official')?.checked,
+    'ag15-metro-analysis-line':document.getElementById('ag15-toggle-analysis')?.checked,
+    'ag15-metro-analysis-fill':document.getElementById('ag15-toggle-analysis')?.checked,
+    'ag15-municipios-line':document.getElementById('ag15-toggle-municipios')?.checked,
+    'ag15-central-line':document.getElementById('ag15-toggle-central')?.checked
+  };
+  for(const [id,on] of Object.entries(states)){
+    if(map.getLayer(id))map.setLayoutProperty(id,'visibility',on?'visible':'none');
+  }
+}
+
+function ag15Fit(gj){
+  const b=boundsFC(gj);
+  if(b)map.fitBounds(b,{padding:38,duration:650});
+}
+
+async function ag15RenderScopeInfo(code){
+  const root=document.getElementById('ag15-scope-info');
+  if(!root)return;
+  try{
+    const meta=await ag15Json(`../data/${code}/evidence/base_metro/metropolis_metadata_${code.toLowerCase()}.json`);
+    const mun=(meta.municipios||[]).map(x=>`<span class="ag15-scope-pill">${ag14Esc(x)}</span>`).join('');
+    root.innerHTML=
+      `<b>${ag14Esc(meta.nombre_metro||'Metrópoli')}</b><br>`+
+      `Tipo: ${ag14Esc(meta.tipo_metro||'s/d')}<br>`+
+      `Municipios: ${meta.n_municipios??'s/d'} · Malla metro: ${(meta.celdas_metro??0).toLocaleString()} celdas<br>`+
+      `Buffer urbano de análisis: ${((meta.buffer_urbano_m||0)/1000).toFixed(1)} km<br>`+
+      `<div style="margin-top:5px;">${mun}</div>`+
+      (meta.fallback_municipal?'<div class="ag15-warning">Esta plaza no fue asociada a una metrópoli oficial en la fuente cargada; se usa el municipio central como fallback.</div>':'');
+  }catch(e){
+    root.innerHTML='<div class="ag15-warning">Todavía no existe la base metropolitana de esta plaza. Ejecuta el notebook 12 · METRÓPOLIS PRE-MACROS.</div>';
+  }
+}
+
+async function ag15LoadTerritorial(code,fit=true){
+  ag15EnsureTerritorialSources();
+  const scope=ag15Scope();
+
+  if(scope==='city'){
+    // El cargador V14 original ya colocó localidad, AGEB y malla de ciudad.
+    ['ag15-metro-official','ag15-metro-analysis','ag15-municipios','ag15-central'].forEach(id=>ag15SetSource(id,fcVacio()));
+    const info=document.getElementById('ag15-scope-info');
+    if(info)info.innerHTML='<b>Ciudad</b><br>Localidad central histórica del MVP.';
+    return;
+  }
+
+  const [official,analysis,municipios,central,ageb,grid]=await Promise.all([
+    ag15JsonOptional(ag15BaseUrl(code,'metropolis_oficial')),
+    ag15JsonOptional(ag15BaseUrl(code,'ambito_metropolitano')),
+    ag15JsonOptional(ag15BaseUrl(code,'municipios_metropolis')),
+    ag15JsonOptional(ag15BaseUrl(code,'municipio_central')),
+    ag15JsonOptional(ag15BaseUrl(code,'ageb_urbanas_metro')),
+    ag15JsonOptional(`../data/${code}/evidence/base_metro/grid_${code.toLowerCase()}_500m_metropolitana.geojson`)
+  ]);
+
+  ag15SetSource('ag15-metro-official',official);
+  ag15SetSource('ag15-metro-analysis',analysis);
+  ag15SetSource('ag15-municipios',municipios);
+  ag15SetSource('ag15-central',central);
+
+  // Reutilizar las tres capas base históricas como "base del ámbito actual".
+  if(scope==='municipality'){
+    ag15SetSource('localidad',central);
+    ag15SetSource('ageb',ageb);
+    ag15SetSource('grid',grid);
+    if(fit)ag15Fit(central);
+  }else if(scope==='metro_official'){
+    ag15SetSource('localidad',official);
+    ag15SetSource('ageb',ageb);
+    ag15SetSource('grid',grid);
+    if(fit)ag15Fit(official);
+  }else{
+    ag15SetSource('localidad',analysis);
+    ag15SetSource('ageb',ageb);
+    ag15SetSource('grid',grid);
+    if(fit)ag15Fit(analysis);
+  }
+
+  ag15TerritorialVisibility();
+  await ag15RenderScopeInfo(code);
+}
+
+const AG15_CITY_ALL_PATHS = ag14AllPaths;
+
+ag14AllPaths = function(id,code){
+  const base=AG15_CITY_ALL_PATHS(id,code);
+  const scope=ag15Scope();
+  if(scope==='city')return base;
+
+  // En ámbito metropolitano no hay fallback silencioso a ciudad:
+  // si no existe evidence_metro, el visor lo marca como pendiente.
+  return base.map(p=>p.replace('/evidence/','/evidence_metro/'));
+};
+
+async function ag15LoadV14Scope(code){
+  if(ag15Scope()==='city')return;
+  const defs=[
+    ['v14-densidad-vivienda',`../data/${code}/evidence_metro/V14/densidad_vivienda_ageb_${code.toLowerCase()}.geojson`],
+    ['v14-densidad-empleo',`../data/${code}/evidence_metro/V14/densidad_empleo_ageb_${code.toLowerCase()}.geojson`],
+    ['v14-agua-drenaje',`../data/${code}/evidence_metro/V14/agua_drenaje_ageb_${code.toLowerCase()}_v02.geojson`],
+    ['v14-zcu-arec',`../data/${code}/evidence_metro/V14/zcu_arec_v14_${code.toLowerCase()}.geojson`]
+  ];
+  for(const [src,url] of defs){
+    try{ag15SetSource(src,await ag15Json(url));}
+    catch(e){ag15SetSource(src,fcVacio());}
+  }
+}
+
+const AG15_PREVIOUS_CARGAR = cargarPlazaV14;
+cargarPlazaV14 = async function(codigo){
+  const t0=performance.now();
+  await AG15_PREVIOUS_CARGAR(codigo);
+  if(ag15Scope()!=='city'){
+    await ag15LoadTerritorial(codigo,true);
+    await ag15LoadV14Scope(codigo);
+    // Reaplicar las subcapas activas usando rutas evidence_metro.
+    for(const id of ag14ActiveIds().filter(x=>!AG14_USER_MAPS.has(x))){
+      if(AG14_V14_IDS[id])continue;
+      await pmLoad(id,codigo,true);
+    }
+    await ag14RefreshAvailability(codigo);
+  }else{
+    await ag15LoadTerritorial(codigo,false);
+  }
+  const sub=document.getElementById('ag-inspector-sub');
+  if(sub)sub.textContent=`${AG15_SCOPE_NAMES[ag15Scope()]} · ${codigo} · ${((performance.now()-t0)/1000).toFixed(1)} s · subcapas activas conservadas.`;
+};
+
+document.getElementById('ag15-scope-selector')?.addEventListener('change',async e=>{
+  AG15_SCOPE=e.target.value;
+  const code=ag14CurrentPlaza();
+  const st=document.getElementById('ag14-plaza-status');
+  if(st)st.textContent=`Cambiando a ${AG15_SCOPE_NAMES[AG15_SCOPE]}…`;
+  await cargarPlazaV14(code);
+  if(st)setTimeout(()=>st.textContent='',1300);
+});
+
+['ag15-toggle-metro-official','ag15-toggle-analysis','ag15-toggle-municipios','ag15-toggle-central'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('change',ag15TerritorialVisibility);
+});
+
+// Añadir ámbito a la explicación del inspector.
+const AG15_PREVIOUS_SELECT = ag14SelectLayer;
+ag14SelectLayer = function(id,name=null){
+  AG15_PREVIOUS_SELECT(id,name);
+  const st=document.getElementById('ag14-selected-state');
+  if(st)st.textContent=`Plaza: ${ag14CurrentPlaza()} · Ámbito: ${AG15_SCOPE_NAMES[ag15Scope()]} · usa transparencia o haz clic en el mapa para inspeccionar.`;
+};
+
+// Arranque: la siguiente etapa (macros) usa metrópoli de análisis por defecto.
+setTimeout(async()=>{
+  const s=document.getElementById('ag15-scope-selector');
+  if(s){s.value='metro_analysis';AG15_SCOPE='metro_analysis';}
+  await cargarPlazaV14(ag14CurrentPlaza());
+},1300);
+
+</script>
+
+
+<div id="ag-map-toolbar">
+
+  <button class="ag-mapbtn">
+    Polígono
+  </button>
+
+  <button class="ag-mapbtn">
+    Punto
+  </button>
+
+  <button class="ag-mapbtn">
+    Medir
+  </button>
+
+  <button class="ag-mapbtn">
+    Limpiar dibujos
+  </button>
+
+  <button
+    class="ag-mapbtn"
+    id="ag-grid-btn"
+  >
+    Malla
+  </button>
+
+  <button class="ag-mapbtn">
+    Macro T1
+  </button>
+
+  <button class="ag-mapbtn">
+    Macro T2
+  </button>
+
+  <button class="ag-mapbtn">
+    Macro T3
+  </button>
+
+</div>
+
+
+<aside id="ag-right-panel">
+
+  <div class="ag-kicker">
+    INSPECTOR AREC GEO
+  </div>
+
+  <div id="ag-inspector-status">
+    Motor multiplaza activo
+  </div>
+
+  <div
+    class="ag-small"
+    id="ag-inspector-sub"
+  >
+    Simbología y render originales de V8/V11.
+  </div>
+
+  <div class="ag-card" id="ag15-scope-card">
+    <div class="ag-card-title">ÁMBITO TERRITORIAL</div>
+    <div id="ag15-scope-info" class="ag15-scope-info">
+      Cargando definición metropolitana…
+    </div>
+  </div>
+  <div class="ag-card" id="ag14-selected-card">
+    <div class="ag-card-title">CAPA SELECCIONADA</div>
+    <div id="ag14-selected-name" style="font-size:12px;font-weight:800;">Ninguna</div>
+    <div id="ag14-selected-state" class="ag-small" style="margin-top:3px;">Activa una subcapa o haz clic en una capa del mapa.</div>
+    <div style="margin-top:10px;font-size:9px;font-weight:700;">Transparencia</div>
+    <input id="ag14-opacity" class="ag14-range" type="range" min="0" max="1" step="0.05" value="0.72">
+    <div class="ag14-value"><span id="ag14-opacity-value">72%</span></div>
+    <div style="margin-top:10px;font-size:9px;font-weight:700;">Capas activas</div>
+    <div id="ag14-active-layers" class="ag14-chip-wrap" style="margin-top:6px;"></div>
+  </div>
+
+  <div class="ag-card">
+    <div class="ag-card-title">SIMBOLOGÍA / LÍMITES</div>
+    <div id="ag14-legend"><div class="ag-small">Selecciona una subcapa para ver colores, rangos y clases.</div></div>
+  </div>
+
+  <div class="ag-card">
+    <div class="ag-card-title">CÓMO SE CALCULA</div>
+    <div id="ag14-method" class="ag14-method">Selecciona una subcapa.</div>
+  </div>
+
+  <div class="ag-card">
+    <div class="ag-card-title">INSPECCIÓN DE DATOS</div>
+    <div class="ag-small">Haz clic en cualquier objeto del mapa. Si hay varias subcapas encendidas, aquí aparecerán los objetos coincidentes por capa.</div>
+    <div id="ag14-feature-info"></div>
+  </div>
+
+
+  <div class="ag-card">
+
+    <div class="ag-card-title">
+      RENDER V14 PRESERVADO
+    </div>
+
+    <div class="ag-dotline">
+      <span class="ag-dot"></span>
+      Densidad vivienda · verdes originales
+    </div>
+
+    <div class="ag-dotline">
+      <span class="ag-dot"></span>
+      Densidad empleo · rojos originales
+    </div>
+
+    <div class="ag-dotline">
+      <span class="ag-dot"></span>
+      Agua/drenaje · categorías originales
+    </div>
+
+    <div class="ag-dotline">
+      <span class="ag-dot"></span>
+      ZCU AREC · colores originales
+    </div>
+
+  </div>
+
+  <div class="ag-card">
+
+    <div class="ag-card-title">
+      ESTADO DE ARQUITECTURA
+    </div>
+
+    <div class="ag-dotline">
+      <span class="ag-dot"></span>
+      Interfaz dashboard activa
+    </div>
+
+    <div class="ag-dotline">
+      <span class="ag-dot"></span>
+      MapLibre original preservado
+    </div>
+
+    <div class="ag-dotline">
+      <span class="ag-dot"></span>
+      Fuentes y popups V11 preservados
+    </div>
+
+    <div class="ag-dotline">
+      <span class="ag-dot amber"></span>
+      GeoJSON reales por plaza
+    </div>
+
+  </div>
+
+  <div class="ag-card">
+
+    <div class="ag-card-title">
+      RESULTADOS DE ESTRUCTURA
+    </div>
+
+    <div class="ag-stats">
+
+      <div class="ag-stat">
+        <b>23</b>
+        <span>Variables</span>
+      </div>
+
+      <div class="ag-stat">
+        <b>19</b>
+        <span>Plazas</span>
+      </div>
+
+      <div class="ag-stat">
+        <b>V14</b>
+        <span>Render original</span>
+      </div>
+
+      <div class="ag-stat">
+        <b>Global</b>
+        <span>Navegación</span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="ag-card">
+
+    <div class="ag-card-title">
+      REGISTRO
+    </div>
+
+    <div id="ag-log">
+Formato dashboard cargado.
+Motor cartográfico sin modificar.
+    </div>
+
+  </div>
+
+</aside>
+
+<input id="ag14-file-input" type="file" accept=".geojson,.json,.kml,.kmz,.zip" multiple>
+</body>
+
+</html>
